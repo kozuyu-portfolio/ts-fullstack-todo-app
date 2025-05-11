@@ -1,0 +1,16 @@
+{
+    "name": "@ts-fullstack-todo/shared",
+    "version": "0.1.0",
+    "description": "",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsc -p tsconfig.json",
+        "clean": "rimraf dist"
+    },
+    "packageManager": "pnpm@10.10.0",
+    "private": "false",
+    "type": "module",
+    "types": "dist/index.d.ts",
+    "files": ["dist"]
+}
