@@ -1,12 +1,12 @@
 {
     "name": "ts-fullstack-todo-app",
-    "version": "1.0.0",
+    "version": "0.1.0",
     "description": "",
     "main": "index.js",
     "scripts": {
         "api": "pnpm -C apps/api",
         "web": "pnpm -C apps/web",
-        "infra": "pnpm -C apps/infra",
+        "infra": "pnpm -C infra",
         "shared": "pnpm -C packages/shared",
         "lint": "biome check .",
         "format": "biome format --write ."
@@ -14,6 +14,9 @@
     "packageManager": "pnpm@10.10.0",
     "private": "true",
     "devDependencies": {
-        "@biomejs/biome": "^1.9.4"
+        "@biomejs/biome": "^1.9.4",
+        "@types/node": "^22.15.17",
+        "rimraf": "^6.0.1",
+        "typescript": "^5.8.3"
     }
 }
