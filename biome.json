@@ -1,0 +1,60 @@
+{
+    "$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
+    "files": {
+        "ignore": ["node_modules/**/*", ".pnpm-store/**/*", "dist/**/*", "cdk.out/**/*"]
+    },
+    "organizeImports": {
+        "enabled": true
+    },
+    "linter": {
+        "enabled": true,
+        "rules": {
+            "recommended": true,
+            "correctness": {
+                "noUnusedImports": "warn"
+            },
+            "style": {
+                "useBlockStatements": "error",
+                "noNegationElse": "error",
+                "useConsistentArrayType": "error"
+            }
+        }
+    },
+    "formatter": {
+        "indentStyle": "space",
+        "indentWidth": 4,
+        "lineWidth": 120
+    },
+    "javascript": {
+        "formatter": {
+            "quoteStyle": "single",
+            "semicolons": "asNeeded"
+        },
+        "parser": {
+            "unsafeParameterDecoratorsEnabled": true
+        }
+    },
+    "overrides": [
+        {
+            "include": ["apps/**", "packages/**"],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "noDefaultExport": "error"
+                    }
+                }
+            }
+        },
+        {
+            "include": ["apps/api/**"],
+            "linter": {
+                "rules": {
+                    "style": {
+                        "useImportType": "off",
+                        "useNodejsImportProtocol": "off"
+                    }
+                }
+            }
+        }
+    ]
+}
