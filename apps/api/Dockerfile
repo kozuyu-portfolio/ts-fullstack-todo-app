@@ -21,7 +21,7 @@ FROM public.ecr.aws/docker/library/node:22-slim
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 \
      /lambda-adapter /opt/extensions/lambda-adapter
 
-WORKDIR ${LAMBDA_TASK_ROOT}
+WORKDIR /var/task
 COPY --from=builder /build/node_modules node_modules
 COPY --from=builder /build/.pnpm-store .pnpm-store
 COPY --from=builder /build/apps/api/dist apps/api/dist
