@@ -1,0 +1,30 @@
+version: '3.8'
+
+networks:
+  ts-fullstack-todo-app:
+volumes:
+  postgres-data:
+
+services:
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - ts-fullstack-todo-app
+  ts-fullstack-todo-app:
+    container_name: ts-fullstack-todo-app
+    image: "mcr.microsoft.com/devcontainers/typescript-node:22"
+    working_dir: /workspace
+    volumes:
+      - ..:/workspace:cached
+    command: sleep infinity
+    depends_on:
+      - db
+    networks:
+      - ts-fullstack-todo-app
