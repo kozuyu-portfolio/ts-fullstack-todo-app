@@ -1,0 +1,15 @@
+# パッケージ
+node_modules
+.pnpm-store
+
+# ビルド
+dist
+
+# 環境変数
+.env
+
+# macOS
+.DS_Store
+
+# ログ
+*.log
