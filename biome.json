@@ -1,7 +1,7 @@
 {
     "$schema": "https://biomejs.dev/schemas/1.8.2/schema.json",
     "files": {
-        "ignore": ["node_modules/**/*", ".pnpm-store/**/*", "dist/**/*", "cdk.out/**/*"]
+        "ignore": ["node_modules/**/*", ".pnpm-store/**/*", "dist/**/*", "cdk.out/**/*", "api-client/**/*"]
     },
     "organizeImports": {
         "enabled": true

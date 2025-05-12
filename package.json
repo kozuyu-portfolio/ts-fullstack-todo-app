@@ -1,22 +1,32 @@
 {
-    "name": "ts-fullstack-todo-app",
-    "version": "0.1.0",
+    "name": "@ts-fullstack-todo/api-client",
+    "version": "0.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "dist/index.js",
     "scripts": {
         "api": "pnpm -C apps/api",
         "web": "pnpm -C apps/web",
         "infra": "pnpm -C infra",
         "shared": "pnpm -C packages/shared",
+        "api-client": "pnpm -C packages/api-client",
+        "gen:api": "openapi --input ./apps/api/swagger.json --output ./packages/api-client/src --client fetch --useOptions --useUnionTypes",
         "lint": "biome check .",
         "format": "biome format --write ."
     },
     "packageManager": "pnpm@10.10.0",
-    "private": "true",
+    "private": "false",
+    "dependencies": {
+        "@ts-fullstack-todo/api-client": "link:packages/api-client",
+        "@ts-fullstack-todo/shared": "link:packages/shared"
+    },
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@types/node": "^22.15.17",
+        "openapi-typescript-codegen": "^0.29.0",
         "rimraf": "^6.0.1",
         "typescript": "^5.8.3"
-    }
+    },
+    "type": "module",
+    "types": "dist/index.d.ts",
+    "files": ["dist"]
 }
