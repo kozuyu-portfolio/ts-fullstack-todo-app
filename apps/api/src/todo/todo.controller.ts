@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { TodoService } from './todo.service';
-import { TodoModel } from 'model/todo.model';
+import { TodoModel } from '../model/todo.model';
 
 @Controller('todos')
 @ApiTags('todos')
