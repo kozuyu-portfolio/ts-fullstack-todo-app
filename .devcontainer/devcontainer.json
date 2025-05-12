@@ -2,7 +2,9 @@
     "name": "Fullstack ToDo App",
     "dockerComposeFile": "compose.yml",
     "service": "ts-fullstack-todo-app",
-    "runServices": ["ts-fullstack-todo-app"],
+    "runServices": [
+        "ts-fullstack-todo-app"
+    ],
     "workspaceFolder": "/workspace",
     "postCreateCommand": "npm install -g pnpm && pnpm install",
     "features": {
@@ -14,7 +16,12 @@
     },
     "customizations": {
         "vscode": {
-            "extensions": ["biomejs.biome", "Prisma.prisma"]
+            "extensions": [
+                "biomejs.biome",
+                "Prisma.prisma",
+                "eamodio.gitlens",
+                "streetsidesoftware.code-spell-checker",
+            ]
         }
     },
     "remoteUser": "node"
