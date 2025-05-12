@@ -9,8 +9,11 @@
         "declaration": true,
         "paths": {
             "@ts-fullstack-todo/shared": [
-                "packages/shared/src"
-            ]
+                "packages/shared/dist"
+            ],
+            "@ts-fullstack-todo/api-client": [
+                "packages/api-client/dist"
+            ],
         }
     }
 }
