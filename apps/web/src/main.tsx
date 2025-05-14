@@ -1,6 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { App } from './App'
+import { createRouter, RouterProvider } from '@tanstack/react-router'
+
+import { routeTree } from './routeTree.gen'
+import { CssBaseline, ThemeProvider } from '@mui/material'
+import { theme } from './theme'
+import { OpenAPI } from '@ts-fullstack-todo/api-client'
+
+OpenAPI.BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+OpenAPI.WITH_CREDENTIALS = true
+OpenAPI.TOKEN = () => Promise.resolve(localStorage.getItem('token') ?? '')
+
+const router = createRouter({ routeTree })
+declare module '@tanstack/react-router' {
+    interface Register {
+        router: typeof router
+    }
+}
 
 const container = document.getElementById('root')
 if (!container) {
@@ -8,6 +24,9 @@ if (!container) {
 }
 ReactDOM.createRoot(container).render(
     <React.StrictMode>
-        <App />
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <RouterProvider router={router} />
+        </ThemeProvider>
     </React.StrictMode>,
 )
