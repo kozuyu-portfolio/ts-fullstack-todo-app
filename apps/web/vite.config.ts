@@ -1,13 +1,19 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { fileURLToPath, URL } from 'node:url';
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
+
+function resolvePath(path: string): string {
+  return new URL(path, import.meta.url).pathname
+}
 
 // biome-ignore lint/style/noDefaultExport: <explanation>
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    TanStackRouterVite({ target: 'react', autoCodeSplitting: true }),
+    react()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      src: resolvePath('./src/'),
     },
   },
 });
