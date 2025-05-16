@@ -6,7 +6,7 @@
         "ts-fullstack-todo-app"
     ],
     "workspaceFolder": "/workspace",
-    "postCreateCommand": "npm install -g pnpm && pnpm install",
+    "postCreateCommand": "npm install -g pnpm && pnpm install && pnpm api exec prisma migrate reset && pnpm web exec cypress install",
     "features": {
         "ghcr.io/devcontainers/features/aws-cli:1": {},
         "ghcr.io/devcontainers/features/git:1": {},
