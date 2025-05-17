@@ -13,7 +13,8 @@
         "lint": "pnpm exec biome check .",
         "format": "pnpm -r exec biome format --write .",
         "type-check": "pnpm -r exec tsc --noEmit",
-        "test:unit": "pnpm -r run test"
+        "test:unit": "pnpm -r run test",
+        "prepare": "husky"
     },
     "packageManager": "pnpm@10.10.0",
     "private": "false",
@@ -24,11 +25,16 @@
     "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@types/node": "^22.15.17",
+        "husky": "^9.1.7",
+        "lint-staged": "^16.0.0",
         "openapi-typescript-codegen": "^0.29.0",
         "rimraf": "^6.0.1",
         "typescript": "^5.8.3"
     },
     "type": "module",
     "types": "dist/index.d.ts",
-    "files": ["dist"]
+    "files": ["dist"],
+    "lint-staged": {
+        "*.{ts,tsx,js,jsx,json,md,css,html}": ["pnpm exec biome check"]
+    }
 }
