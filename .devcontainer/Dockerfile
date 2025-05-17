@@ -1,6 +1,5 @@
 FROM mcr.microsoft.com/devcontainers/typescript-node:22
 
-# install packages for running cypress
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       libgtk2.0-0 \
@@ -13,6 +12,7 @@ RUN apt-get update && \
       libasound2 \
       libxtst6 \
       xauth \
-      xvfb  && \ 
+      xvfb \ 
+      postgresql-client && \
     rm -rf /var/lib/apt/lists/*
 

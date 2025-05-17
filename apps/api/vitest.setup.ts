@@ -1,8 +1,9 @@
-import { execSync } from 'node:child_process'
-import { config } from 'dotenv'
+import { afterAll } from 'vitest'
+import { dropTestDb, initTestDb, prisma } from './test/prisma-test-util'
 
-config({ path: '.env.test' })
+initTestDb()
 
-execSync('pnpm prisma migrate reset --force --skip-seed', {
-    stdio: 'inherit',
+afterAll(async () => {
+    await prisma.$disconnect()
+    dropTestDb()
 })

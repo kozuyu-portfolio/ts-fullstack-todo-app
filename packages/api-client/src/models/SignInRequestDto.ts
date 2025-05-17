@@ -3,6 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type SignInRequestDto = {
-    email: string
-    password: string
-}
+    email: string;
+    password: string;
+};
+

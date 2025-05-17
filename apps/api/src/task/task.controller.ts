@@ -1,0 +1,52 @@
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
+import { AuthGuard } from '@nestjs/passport'
+import { plainToInstance } from 'class-transformer'
+import { AuthorizedUser } from '../auth/strategies/jwt.strategy'
+import { JwtPayload } from '../model/auth.model'
+import { CreateTaskRequestDto } from './dto/create-task.request.dto'
+import { CreateTaskResponseDto } from './dto/create-task.response.dto'
+import { TaskResponseDto } from './dto/task.response.dto'
+import { UpdateTaskRequestDto } from './dto/update-task.request.dto'
+import { TaskService } from './task.service'
+
+@UseGuards(AuthGuard('jwt'))
+@Controller('tasks')
+export class TaskController {
+    constructor(private readonly taskService: TaskService) {}
+
+    @Post()
+    async create(
+        @AuthorizedUser() user: JwtPayload,
+        @Body() dto: CreateTaskRequestDto,
+    ): Promise<CreateTaskResponseDto> {
+        const task = await this.taskService.create(user.sub, dto)
+        return plainToInstance(CreateTaskResponseDto, task)
+    }
+
+    @Get()
+    async findAll(@AuthorizedUser() user: JwtPayload): Promise<TaskResponseDto[]> {
+        const tasks = await this.taskService.findAll(user.sub)
+        return tasks.map((t) => plainToInstance(TaskResponseDto, t))
+    }
+
+    @Get(':id')
+    async findOne(@AuthorizedUser() user: JwtPayload, @Param('id', ParseIntPipe) id: number): Promise<TaskResponseDto> {
+        const task = await this.taskService.findOne(user.sub, id)
+        return plainToInstance(TaskResponseDto, task)
+    }
+
+    @Patch(':id')
+    async update(
+        @AuthorizedUser() user: JwtPayload,
+        @Param('id', ParseIntPipe) id: number,
+        @Body() dto: UpdateTaskRequestDto,
+    ): Promise<TaskResponseDto> {
+        const task = await this.taskService.update(user.sub, id, dto)
+        return plainToInstance(TaskResponseDto, task)
+    }
+
+    @Delete(':id')
+    remove(@AuthorizedUser() user: JwtPayload, @Param('id', ParseIntPipe) id: number) {
+        return this.taskService.remove(user.sub, id)
+    }
+}

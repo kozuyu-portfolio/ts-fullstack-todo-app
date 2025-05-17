@@ -77,46 +77,114 @@
         ]
       }
     },
-    "/todos": {
-      "get": {
-        "operationId": "TodoController_getTodos",
+    "/tasks": {
+      "post": {
+        "operationId": "TaskController_create",
         "parameters": [],
-        "responses": {
-          "default": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TodoModel"
-                  }
-                }
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaskRequestDto"
               }
             }
           }
         },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
         "tags": [
-          "todos"
+          "Task"
         ]
       },
-      "post": {
-        "operationId": "TodoController_createTodo",
+      "get": {
+        "operationId": "TaskController_findAll",
         "parameters": [],
         "responses": {
-          "default": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TodoModel"
-                }
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "operationId": "TaskController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Task"
+        ]
+      },
+      "patch": {
+        "operationId": "TaskController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTaskRequestDto"
               }
             }
           }
         },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
         "tags": [
-          "todos"
+          "Task"
+        ]
+      },
+      "delete": {
+        "operationId": "TaskController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Task"
         ]
       }
     }
@@ -183,40 +251,28 @@
           "access_token"
         ]
       },
-      "TodoModel": {
+      "CreateTaskRequestDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "number"
-          },
           "title": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "completed": {
-            "type": "boolean"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "userId": {
-            "type": "number"
+            "type": "string",
+            "description": "タスクのタイトル"
           }
         },
         "required": [
-          "id",
-          "title",
-          "completed",
-          "createdAt",
-          "updatedAt"
+          "title"
         ]
+      },
+      "UpdateTaskRequestDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "isDone": {
+            "type": "boolean"
+          }
+        }
       }
     }
   }

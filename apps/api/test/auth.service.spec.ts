@@ -9,7 +9,7 @@ const service = new AuthService(prisma, jwt)
 
 describe('AuthService (with real DB)', () => {
     beforeAll(async () => {
-        await prisma.user.deleteMany() // クリーンに
+        await prisma.user.deleteMany()
     })
 
     it('signup() & signin()', async () => {
@@ -17,16 +17,14 @@ describe('AuthService (with real DB)', () => {
         const { access_token } = await service.signup(cred)
         expect(access_token).toBeTruthy()
 
-        // DB に保存されているか確認
         const saved = await prisma.user.findUnique({ where: { email: cred.email } })
         expect(saved).not.toBeNull()
-        if (saved === null) {
-            throw new Error('Saved user should not be null')
+        if (!saved) {
+            throw new Error('User not found')
         }
         expect(await argon2.verify(saved.password, cred.password)).toBe(true)
 
-        // signin 成功
-        const res2 = await service.signin(cred)
-        expect(res2.access_token).toBeTruthy()
+        const res = await service.signin(cred)
+        expect(res.access_token).toBeTruthy()
     })
 })

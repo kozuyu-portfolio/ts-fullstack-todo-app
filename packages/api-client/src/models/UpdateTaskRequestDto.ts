@@ -2,7 +2,8 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export type SignUpResponseDto = {
-    access_token: string;
+export type UpdateTaskRequestDto = {
+    title?: string;
+    isDone?: boolean;
 };
 

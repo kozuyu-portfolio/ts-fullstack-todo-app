@@ -7,12 +7,13 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test-and-build:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
       NODE_VERSION: "22"
       DATABASE_URL: "postgres://postgres:postgres@localhost:5432/postgres?schema=public"
+      DB_HOST: "localhost"
       JWT_SECRET: "test-secret"
       JWT_EXPIRES_IN: "1h"
     services:
@@ -47,6 +48,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile && pnpm shared build && pnpm api-client build
 
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install -y postgresql-client
+
       - name: Migrate database
         run: pnpm api exec prisma migrate reset --force
 
@@ -73,3 +77,6 @@ jobs:
           CYPRESS_CACHE_FOLDER: ~/.cache/Cypress
         run: |
           pnpm web test:e2e
+
+      - name: Build
+        run: pnpm api build && pnpm web build

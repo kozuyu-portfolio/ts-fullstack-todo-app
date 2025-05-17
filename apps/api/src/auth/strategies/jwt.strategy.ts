@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { ExecutionContext, Injectable, createParamDecorator } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { JwtPayload } from 'model/auth.model'
 import { ExtractJwt, Strategy } from 'passport-jwt'
@@ -21,3 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         return payload
     }
 }
+
+export const AuthorizedUser = createParamDecorator((_data: undefined, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest()
+    return request.user as JwtPayload
+})

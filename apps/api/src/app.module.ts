@@ -3,10 +3,10 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { AuthModule } from './auth/auth.module'
 import { PrismaModule } from './prisma/prisma.module'
-import { TodoModule } from './todo/todo.module'
+import { TaskModule } from './task/task.module'
 
 @Module({
-    imports: [PrismaModule, AuthModule, TodoModule],
+    imports: [PrismaModule, AuthModule, TaskModule],
     controllers: [AppController],
     providers: [AppService],
 })

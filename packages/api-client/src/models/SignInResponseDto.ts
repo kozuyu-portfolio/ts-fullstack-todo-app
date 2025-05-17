@@ -3,5 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type SignInResponseDto = {
-    access_token: string
-}
+    access_token: string;
+};
+
