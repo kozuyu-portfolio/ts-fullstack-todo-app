@@ -9,7 +9,7 @@
         "infra": "pnpm -C infra",
         "shared": "pnpm -C packages/shared",
         "api-client": "pnpm -C packages/api-client",
-        "gen:api": "openapi --input ./apps/api/swagger.json --output ./packages/api-client/src --client fetch --useOptions --useUnionTypes",
+        "gen:api": "pnpm api-client generate",
         "lint": "pnpm exec biome check .",
         "format": "pnpm -r exec biome format --write .",
         "type-check": "pnpm -r exec tsc --noEmit",

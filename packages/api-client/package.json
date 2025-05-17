@@ -6,11 +6,20 @@
     "scripts": {
         "test": "echo \"unit test is not implemented\"",
         "build": "tsc -p tsconfig.json",
-        "clean": "rimraf dist"
+        "clean": "rimraf src dist",
+        "generate": "pnpm run clean && pnpm exec openapi-ts && pnpm run build"
     },
     "packageManager": "pnpm@10.10.0",
     "private": "false",
     "type": "module",
     "types": "dist/index.d.ts",
-    "files": ["dist"]
+    "files": [
+        "dist"
+    ],
+    "devDependencies": {
+        "@hey-api/openapi-ts": "^0.67.4"
+    },
+    "dependencies": {
+        "@hey-api/client-axios": "^0.7.1"
+    }
 }

@@ -2,8 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { Avatar, Box, Button, Container, Link, Stack, TextField, Typography } from '@mui/material'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { AuthService } from '@ts-fullstack-todo/api-client'
+import { authControllerSignin } from '@ts-fullstack-todo/api-client'
 import { useForm } from 'react-hook-form'
+import { apiClient } from 'src/api/client'
 import { z } from 'zod'
 
 export const Route = createFileRoute('/_public/login')({
@@ -26,8 +27,11 @@ export function LoginPage() {
 
     const onSubmit = async (data: LoginForm) => {
         try {
-            const res = await AuthService.authControllerSignin({ requestBody: data })
-            localStorage.setItem('token', res.access_token)
+            const res = await authControllerSignin({ body: data, client: apiClient })
+            if (res.data?.access_token == null) {
+                throw new Error('トークンを取得できませんでした')
+            }
+            localStorage.setItem('token', res.data.access_token)
             navigate({ to: '/tasks' })
         } catch {
             alert('ログインに失敗しました')
