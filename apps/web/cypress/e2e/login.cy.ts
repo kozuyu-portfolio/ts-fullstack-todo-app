@@ -7,7 +7,7 @@ declare namespace Cypress {
          * @example cy.signup()
          */
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        signup(): Chainable<any>;
+        signup(): Chainable<any>
     }
 }
 
@@ -17,8 +17,8 @@ declare namespace Cypress {
  * 2. /login から認証 → タスク一覧（/tasks）へリダイレクトを確認
  */
 
-const email = 'testuser@example.com';
-const password = 'password';
+const email = 'testuser@example.com'
+const password = 'password'
 
 Cypress.Commands.add('signup', () => {
     cy.request({
@@ -26,22 +26,22 @@ Cypress.Commands.add('signup', () => {
         url: `${Cypress.env('apiUrl')}/auth/signup`,
         body: { email, password },
         failOnStatusCode: false, // 409 Conflict を無視
-    });
-});
+    })
+})
 
 describe('Login flow', () => {
     before(() => {
-        cy.signup();
-    });
+        cy.signup()
+    })
 
     it('logs in and redirects to /', () => {
-        cy.visit('/login');
+        cy.visit('/login')
 
-        cy.get('input[type="email"]').type(email);
-        cy.get('input[type="password"]').type(password);
-        cy.contains('button', 'ログイン').click();
+        cy.get('input[type="email"]').type(email)
+        cy.get('input[type="password"]').type(password)
+        cy.contains('button', 'ログイン').click()
 
-        cy.url().should('eq', `${Cypress.config().baseUrl}/tasks`);
-        cy.contains('ログアウト');
-    });
-});
+        cy.url().should('eq', `${Cypress.config().baseUrl}/tasks`)
+        cy.contains('ログアウト')
+    })
+})

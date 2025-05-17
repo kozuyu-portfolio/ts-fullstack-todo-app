@@ -1,7 +1,6 @@
 import swc from 'unplugin-swc'
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vitest/config'
 
-// biome-ignore lint/style/noDefaultExport: <explanation>
 export default defineConfig({
     test: {
         globals: true,
@@ -20,4 +19,4 @@ export default defineConfig({
             module: { type: 'es6' },
         }),
     ],
-});
+})

@@ -8,12 +8,8 @@
         "skipLibCheck": true,
         "declaration": true,
         "paths": {
-            "@ts-fullstack-todo/shared": [
-                "packages/shared/dist"
-            ],
-            "@ts-fullstack-todo/api-client": [
-                "packages/api-client/dist"
-            ],
+            "@ts-fullstack-todo/shared": ["packages/shared/dist"],
+            "@ts-fullstack-todo/api-client": ["packages/api-client/dist"]
         }
     }
 }

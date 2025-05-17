@@ -1,11 +1,11 @@
+import { RouterProvider, createRouter } from '@tanstack/react-router'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { createRouter, RouterProvider } from '@tanstack/react-router'
 
-import { routeTree } from './routeTree.gen'
 import { CssBaseline, ThemeProvider } from '@mui/material'
-import { theme } from './theme'
 import { OpenAPI } from '@ts-fullstack-todo/api-client'
+import { routeTree } from './routeTree.gen'
+import { theme } from './theme'
 
 OpenAPI.BASE = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 OpenAPI.WITH_CREDENTIALS = true

@@ -2,10 +2,10 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { TodoModel } from '../models/TodoModel';
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
+import type { TodoModel } from '../models/TodoModel'
+import type { CancelablePromise } from '../core/CancelablePromise'
+import { OpenAPI } from '../core/OpenAPI'
+import { request as __request } from '../core/request'
 export class TodosService {
     /**
      * @returns TodoModel
@@ -15,7 +15,7 @@ export class TodosService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/todos',
-        });
+        })
     }
     /**
      * @returns TodoModel
@@ -25,6 +25,6 @@ export class TodosService {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/todos',
-        });
+        })
     }
 }

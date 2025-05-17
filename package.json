@@ -10,8 +10,10 @@
         "shared": "pnpm -C packages/shared",
         "api-client": "pnpm -C packages/api-client",
         "gen:api": "openapi --input ./apps/api/swagger.json --output ./packages/api-client/src --client fetch --useOptions --useUnionTypes",
-        "lint": "biome check .",
-        "format": "biome format --write ."
+        "lint": "pnpm exec biome check .",
+        "format": "pnpm -r exec biome format --write .",
+        "type-check": "pnpm -r exec tsc --noEmit",
+        "test:unit": "pnpm -r run test"
     },
     "packageManager": "pnpm@10.10.0",
     "private": "false",

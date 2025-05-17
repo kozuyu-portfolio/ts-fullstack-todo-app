@@ -2,11 +2,9 @@
     "name": "Fullstack ToDo App",
     "dockerComposeFile": "compose.yml",
     "service": "ts-fullstack-todo-app",
-    "runServices": [
-        "ts-fullstack-todo-app"
-    ],
+    "runServices": ["ts-fullstack-todo-app"],
     "workspaceFolder": "/workspace",
-    "postCreateCommand": "npm install -g pnpm && pnpm install && pnpm api exec prisma migrate reset && pnpm web exec cypress install",
+    "postCreateCommand": "npm install -g pnpm && pnpm install && pnpm api exec prisma migrate reset --force && pnpm web exec cypress install",
     "features": {
         "ghcr.io/devcontainers/features/aws-cli:1": {},
         "ghcr.io/devcontainers/features/git:1": {},
@@ -21,6 +19,7 @@
                 "Prisma.prisma",
                 "eamodio.gitlens",
                 "streetsidesoftware.code-spell-checker",
+                "redhat.vscode-yaml"
             ]
         }
     },

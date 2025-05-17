@@ -1,10 +1,10 @@
-import { Box, Button, Stack, Typography } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
 import { Suspense, createContext } from 'react'
-import logo from 'src/vite.svg' // FIXME: use a better logo
 import { Header } from 'src/components/Header'
 import { Link } from 'src/components/Link'
 import { Loading } from 'src/components/Loading'
+import logo from 'src/vite.svg' // FIXME: use a better logo
 
 export const SidebarStateContext = createContext({ sideBarExpanded: false, canViewViewer: false })
 

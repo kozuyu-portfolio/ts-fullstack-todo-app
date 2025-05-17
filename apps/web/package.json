@@ -6,12 +6,12 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",
-        "lint": "eslint .",
         "preview": "vite preview",
+        "test": "echo \"unit test is not implemented\"",
         "dev:api": "pnpm --filter @ts-fullstack-todo/api start:dev",
-        "dev:web": "vite",
+        "dev:web": "vite --host",
         "e2e:run": "cypress run --headless --config-file cypress.config.mjs",
-        "test:e2e": "start-server-and-test 'pnpm dev:api' http://localhost:3000 'start-server-and-test vite http://localhost:5173 e2e:run'"
+        "test:e2e": "start-server-and-test 'pnpm dev:api' http://localhost:3000 'start-server-and-test \"pnpm dev:web\" http://localhost:5173 e2e:run'"
     },
     "dependencies": {
         "@emotion/react": "^11.14.0",

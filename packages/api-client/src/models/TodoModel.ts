@@ -3,12 +3,11 @@
 /* tslint:disable */
 /* eslint-disable */
 export type TodoModel = {
-    id: number;
-    title: string;
-    description?: string;
-    completed: boolean;
-    createdAt: string;
-    updatedAt: string;
-    userId?: number;
-};
-
+    id: number
+    title: string
+    description?: string
+    completed: boolean
+    createdAt: string
+    updatedAt: string
+    userId?: number
+}
