@@ -25,6 +25,22 @@ export type CreateTaskRequestDto = {
     title: string;
 };
 
+export type CreateTaskResponseDto = {
+    id: number;
+    title: string;
+    isDone: boolean;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type TaskResponseDto = {
+    id: number;
+    title: string;
+    isDone: boolean;
+    createdAt: string;
+    updatedAt: string;
+};
+
 export type UpdateTaskRequestDto = {
     title?: string;
     isDone?: boolean;
@@ -75,8 +91,10 @@ export type TaskControllerFindAllData = {
 };
 
 export type TaskControllerFindAllResponses = {
-    200: unknown;
+    default: Array<TaskResponseDto>;
 };
+
+export type TaskControllerFindAllResponse = TaskControllerFindAllResponses[keyof TaskControllerFindAllResponses];
 
 export type TaskControllerCreateData = {
     body: CreateTaskRequestDto;
@@ -86,8 +104,10 @@ export type TaskControllerCreateData = {
 };
 
 export type TaskControllerCreateResponses = {
-    201: unknown;
+    default: CreateTaskResponseDto;
 };
+
+export type TaskControllerCreateResponse = TaskControllerCreateResponses[keyof TaskControllerCreateResponses];
 
 export type TaskControllerRemoveData = {
     body?: never;
@@ -99,8 +119,10 @@ export type TaskControllerRemoveData = {
 };
 
 export type TaskControllerRemoveResponses = {
-    200: unknown;
+    default: boolean;
 };
+
+export type TaskControllerRemoveResponse = TaskControllerRemoveResponses[keyof TaskControllerRemoveResponses];
 
 export type TaskControllerFindOneData = {
     body?: never;
@@ -112,8 +134,10 @@ export type TaskControllerFindOneData = {
 };
 
 export type TaskControllerFindOneResponses = {
-    200: unknown;
+    default: TaskResponseDto;
 };
+
+export type TaskControllerFindOneResponse = TaskControllerFindOneResponses[keyof TaskControllerFindOneResponses];
 
 export type TaskControllerUpdateData = {
     body: UpdateTaskRequestDto;
@@ -125,8 +149,10 @@ export type TaskControllerUpdateData = {
 };
 
 export type TaskControllerUpdateResponses = {
-    200: unknown;
+    default: TaskResponseDto;
 };
+
+export type TaskControllerUpdateResponse = TaskControllerUpdateResponses[keyof TaskControllerUpdateResponses];
 
 export type ClientOptions = {
     baseURL: string;
