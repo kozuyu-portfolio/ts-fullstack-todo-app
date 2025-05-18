@@ -16,6 +16,7 @@ jobs:
       DB_HOST: "localhost"
       JWT_SECRET: "test-secret"
       JWT_EXPIRES_IN: "1h"
+      ATTACHMENT_BUCKET: "test-bucket"
     services:
       db:
         image: postgres:16

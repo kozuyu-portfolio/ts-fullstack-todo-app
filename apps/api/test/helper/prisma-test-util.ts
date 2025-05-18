@@ -1,7 +1,7 @@
 import { execSync } from 'child_process'
 import { randomUUID } from 'crypto'
 import { config } from 'dotenv'
-import { PrismaService } from '../src/prisma/prisma.service'
+import { PrismaService } from '../../src/prisma/prisma.service'
 
 config({ path: '.env.test' })
 

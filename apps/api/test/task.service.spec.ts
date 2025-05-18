@@ -1,6 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { TaskService } from '../src/task/task.service'
-import { prisma } from './prisma-test-util'
+import { prisma } from './helper/prisma-test-util'
 
 const service = new TaskService(prisma)
 let userId: number

@@ -2,14 +2,14 @@ import { JwtService } from '@nestjs/jwt'
 import * as argon2 from 'argon2'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { AuthService } from '../src/auth/auth.service'
-import { prisma } from './prisma-test-util'
+import { prisma } from './helper/prisma-test-util'
 
 const jwt = new JwtService({ secret: 'test-secret' })
 const service = new AuthService(prisma, jwt)
 
-describe('AuthService (with real DB)', () => {
+describe('AuthService', () => {
     beforeAll(async () => {
-        await prisma.user.deleteMany() // クリーンに
+        await prisma.user.deleteMany()
     })
 
     it('signup() & signin()', async () => {
@@ -17,7 +17,6 @@ describe('AuthService (with real DB)', () => {
         const { access_token } = await service.signup(cred)
         expect(access_token).toBeTruthy()
 
-        // DB に保存されているか確認
         const saved = await prisma.user.findUnique({ where: { email: cred.email } })
         expect(saved).not.toBeNull()
         if (saved === null) {
@@ -25,8 +24,7 @@ describe('AuthService (with real DB)', () => {
         }
         expect(await argon2.verify(saved.password, cred.password)).toBe(true)
 
-        // signin 成功
-        const res2 = await service.signin(cred)
-        expect(res2.access_token).toBeTruthy()
+        const res = await service.signin(cred)
+        expect(res.access_token).toBeTruthy()
     })
 })

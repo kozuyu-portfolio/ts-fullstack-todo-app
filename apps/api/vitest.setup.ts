@@ -1,6 +1,9 @@
 import { afterAll } from 'vitest'
-import { dropTestDb, initTestDb, prisma } from './test/prisma-test-util'
+import { dropTestDb, initTestDb, prisma } from './test/helper/prisma-test-util'
 
+try {
+    dropTestDb()
+} catch (e) {}
 initTestDb()
 
 afterAll(async () => {

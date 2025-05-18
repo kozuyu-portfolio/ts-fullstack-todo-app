@@ -19,9 +19,7 @@ beforeAll(async () => {
 
     app = moduleRef.createNestApplication()
     prisma = app.get(PrismaService)
-
-    // テスト専用 DB をクリーンに
-    // await prisma.$transaction([prisma.task.deleteMany(), prisma.user.deleteMany()])
+    await prisma.$transaction([prisma.task.deleteMany(), prisma.user.deleteMany()])
 
     await app.init()
     server = request(app.getHttpServer())
