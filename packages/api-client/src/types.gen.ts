@@ -30,6 +30,10 @@ export type UpdateTaskRequestDto = {
     isDone?: boolean;
 };
 
+export type CreateAttachmentRequestDto = {
+    filename: string;
+};
+
 export type AppControllerGetHelloData = {
     body?: never;
     path?: never;
@@ -126,6 +130,19 @@ export type TaskControllerUpdateData = {
 
 export type TaskControllerUpdateResponses = {
     200: unknown;
+};
+
+export type AttachmentControllerCreateData = {
+    body: CreateAttachmentRequestDto;
+    path: {
+        id: number;
+    };
+    query?: never;
+    url: '/tasks/{id}/attachments';
+};
+
+export type AttachmentControllerCreateResponses = {
+    201: unknown;
 };
 
 export type ClientOptions = {
