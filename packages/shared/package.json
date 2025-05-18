@@ -12,5 +12,8 @@
     "private": "false",
     "type": "module",
     "types": "dist/index.d.ts",
-    "files": ["dist"]
+    "files": ["dist"],
+    "dependencies": {
+        "uuid": "^11.1.0"
+    }
 }

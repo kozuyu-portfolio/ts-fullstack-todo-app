@@ -225,6 +225,39 @@
           "Task"
         ]
       }
+    },
+    "/tasks/{id}/attachments": {
+      "post": {
+        "operationId": "AttachmentController_create",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAttachmentRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Attachment"
+        ]
+      }
     }
   },
   "info": {
@@ -369,6 +402,17 @@
             "type": "boolean"
           }
         }
+      },
+      "CreateAttachmentRequestDto": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "filename"
+        ]
       }
     }
   }
