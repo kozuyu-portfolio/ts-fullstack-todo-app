@@ -33,7 +33,6 @@ model Attachment {
     id        String   @id @default(uuid()) @db.Uuid
     objectKey String
     filename  String
-    url       String
     task      Task     @relation(fields: [taskId], references: [id])
     taskId    String   @db.Uuid
     createdAt DateTime @default(now()) @db.Timestamp(0)
