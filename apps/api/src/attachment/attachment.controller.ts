@@ -14,7 +14,7 @@ export class AttachmentController {
     @Post()
     create(
         @AuthorizedUser() user: JwtPayload,
-        @Param('id', ParseIntPipe) id: number,
+        @Param('id', ParseIntPipe) id: string,
         @Body() dto: CreateAttachmentRequestDto,
     ): Promise<CreateAttachmentResponseDto> {
         return this.service.create(user.sub, id, dto)

@@ -116,7 +116,7 @@ export type TaskControllerCreateResponse = TaskControllerCreateResponses[keyof T
 export type TaskControllerRemoveData = {
     body?: never;
     path: {
-        id: number;
+        id: string;
     };
     query?: never;
     url: '/tasks/{id}';
@@ -131,7 +131,7 @@ export type TaskControllerRemoveResponse = TaskControllerRemoveResponses[keyof T
 export type TaskControllerFindOneData = {
     body?: never;
     path: {
-        id: number;
+        id: string;
     };
     query?: never;
     url: '/tasks/{id}';
@@ -146,7 +146,7 @@ export type TaskControllerFindOneResponse = TaskControllerFindOneResponses[keyof
 export type TaskControllerUpdateData = {
     body: UpdateTaskRequestDto;
     path: {
-        id: number;
+        id: string;
     };
     query?: never;
     url: '/tasks/{id}';
@@ -161,7 +161,7 @@ export type TaskControllerUpdateResponse = TaskControllerUpdateResponses[keyof T
 export type AttachmentControllerCreateData = {
     body: CreateAttachmentRequestDto;
     path: {
-        id: number;
+        id: string;
     };
     query?: never;
     url: '/tasks/{id}/attachments';

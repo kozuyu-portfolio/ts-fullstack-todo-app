@@ -34,7 +34,7 @@ export class TaskController {
 
     @Get(':id')
     @ApiResponse({ type: TaskResponseDto })
-    async findOne(@AuthorizedUser() user: JwtPayload, @Param('id', ParseIntPipe) id: number): Promise<TaskResponseDto> {
+    async findOne(@AuthorizedUser() user: JwtPayload, @Param('id', ParseIntPipe) id: string): Promise<TaskResponseDto> {
         const task = await this.taskService.findOne(user.sub, id)
         return plainToInstance(TaskResponseDto, task)
     }
@@ -43,7 +43,7 @@ export class TaskController {
     @ApiResponse({ type: TaskResponseDto })
     async update(
         @AuthorizedUser() user: JwtPayload,
-        @Param('id', ParseIntPipe) id: number,
+        @Param('id', ParseIntPipe) id: string,
         @Body() dto: UpdateTaskRequestDto,
     ): Promise<TaskResponseDto> {
         const task = await this.taskService.update(user.sub, id, dto)
@@ -52,7 +52,7 @@ export class TaskController {
 
     @Delete(':id')
     @ApiResponse({ type: Boolean })
-    remove(@AuthorizedUser() user: JwtPayload, @Param('id', ParseIntPipe) id: number) {
+    remove(@AuthorizedUser() user: JwtPayload, @Param('id', ParseIntPipe) id: string) {
         return this.taskService.remove(user.sub, id)
     }
 }

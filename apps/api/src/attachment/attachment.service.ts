@@ -20,7 +20,7 @@ export class AttachmentService {
         this.bucket = process.env.ATTACHMENT_BUCKET
     }
 
-    async create(userId: number, taskId: number, dto: CreateAttachmentRequestDto) {
+    async create(userId: string, taskId: string, dto: CreateAttachmentRequestDto) {
         const task = await this.prisma.task.findUnique({ where: { id: taskId } })
         if (!task || task.userId !== userId) {
             throw new ForbiddenException()
