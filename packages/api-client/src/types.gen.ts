@@ -96,7 +96,7 @@ export type TaskControllerCreateResponses = {
 export type TaskControllerRemoveData = {
     body?: never;
     path: {
-        id: number;
+        id: string;
     };
     query?: never;
     url: '/tasks/{id}';
@@ -109,7 +109,7 @@ export type TaskControllerRemoveResponses = {
 export type TaskControllerFindOneData = {
     body?: never;
     path: {
-        id: number;
+        id: string;
     };
     query?: never;
     url: '/tasks/{id}';
@@ -122,7 +122,7 @@ export type TaskControllerFindOneResponses = {
 export type TaskControllerUpdateData = {
     body: UpdateTaskRequestDto;
     path: {
-        id: number;
+        id: string;
     };
     query?: never;
     url: '/tasks/{id}';
@@ -135,7 +135,7 @@ export type TaskControllerUpdateResponses = {
 export type AttachmentControllerCreateData = {
     body: CreateAttachmentRequestDto;
     path: {
-        id: number;
+        id: string;
     };
     query?: never;
     url: '/tasks/{id}/attachments';
