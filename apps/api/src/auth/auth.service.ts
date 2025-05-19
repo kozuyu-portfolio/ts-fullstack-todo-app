@@ -39,7 +39,7 @@ export class AuthService {
         return this.signToken(user.id, user.email)
     }
 
-    private async signToken(userId: number, email: string) {
+    private async signToken(userId: string, email: string) {
         const payload = { sub: userId, email }
         const secret = process.env.JWT_SECRET
         if (!secret) {

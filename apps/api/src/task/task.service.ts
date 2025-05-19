@@ -7,21 +7,21 @@ import { UpdateTaskRequestDto } from './dto/update-task.request.dto'
 export class TaskService {
     constructor(private readonly prisma: PrismaService) {}
 
-    create(userId: number, dto: CreateTaskRequestDto) {
+    create(userId: string, dto: CreateTaskRequestDto) {
         return this.prisma.task.create({
             data: { ...dto, userId },
         })
     }
 
-    findAll(userId: number) {
+    findAll(userId: string) {
         return this.prisma.task.findMany({ where: { userId } })
     }
 
-    findOne(userId: number, id: number) {
+    findOne(userId: string, id: string) {
         return this.prisma.task.findFirst({ where: { id, userId } })
     }
 
-    async update(userId: number, id: number, dto: UpdateTaskRequestDto) {
+    async update(userId: string, id: string, dto: UpdateTaskRequestDto) {
         const task = await this.prisma.task.findUnique({ where: { id } })
         if (!task || task.userId !== userId) {
             throw new ForbiddenException()
@@ -29,7 +29,7 @@ export class TaskService {
         return this.prisma.task.update({ where: { id }, data: dto })
     }
 
-    async remove(userId: number, id: number) {
+    async remove(userId: string, id: string) {
         const task = await this.prisma.task.findUnique({ where: { id } })
         if (!task || task.userId !== userId) {
             throw new ForbiddenException()

@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 
 export class CreateTaskResponseDto {
-    @ApiProperty({ type: Number })
-    id!: number
+    @ApiProperty({ type: String })
+    id!: string
 
     @ApiProperty({ type: String })
     title!: string
