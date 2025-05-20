@@ -16,7 +16,8 @@ import { Route as ProtectedImport } from './routes/_protected'
 import { Route as IndexImport } from './routes/index'
 import { Route as PublicSignupImport } from './routes/_public/signup'
 import { Route as PublicLoginImport } from './routes/_public/login'
-import { Route as ProtectedTasksImport } from './routes/_protected/tasks'
+import { Route as ProtectedTasksIndexImport } from './routes/_protected/tasks/index'
+import { Route as ProtectedTasksTaskIdImport } from './routes/_protected/tasks/$taskId'
 
 // Create/Update Routes
 
@@ -48,9 +49,15 @@ const PublicLoginRoute = PublicLoginImport.update({
   getParentRoute: () => PublicRoute,
 } as any)
 
-const ProtectedTasksRoute = ProtectedTasksImport.update({
-  id: '/tasks',
-  path: '/tasks',
+const ProtectedTasksIndexRoute = ProtectedTasksIndexImport.update({
+  id: '/tasks/',
+  path: '/tasks/',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedTasksTaskIdRoute = ProtectedTasksTaskIdImport.update({
+  id: '/tasks/$taskId',
+  path: '/tasks/$taskId',
   getParentRoute: () => ProtectedRoute,
 } as any)
 
@@ -79,13 +86,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicImport
       parentRoute: typeof rootRoute
     }
-    '/_protected/tasks': {
-      id: '/_protected/tasks'
-      path: '/tasks'
-      fullPath: '/tasks'
-      preLoaderRoute: typeof ProtectedTasksImport
-      parentRoute: typeof ProtectedImport
-    }
     '/_public/login': {
       id: '/_public/login'
       path: '/login'
@@ -100,17 +100,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicSignupImport
       parentRoute: typeof PublicImport
     }
+    '/_protected/tasks/$taskId': {
+      id: '/_protected/tasks/$taskId'
+      path: '/tasks/$taskId'
+      fullPath: '/tasks/$taskId'
+      preLoaderRoute: typeof ProtectedTasksTaskIdImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/tasks/': {
+      id: '/_protected/tasks/'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof ProtectedTasksIndexImport
+      parentRoute: typeof ProtectedImport
+    }
   }
 }
 
 // Create and export the route tree
 
 interface ProtectedRouteChildren {
-  ProtectedTasksRoute: typeof ProtectedTasksRoute
+  ProtectedTasksTaskIdRoute: typeof ProtectedTasksTaskIdRoute
+  ProtectedTasksIndexRoute: typeof ProtectedTasksIndexRoute
 }
 
 const ProtectedRouteChildren: ProtectedRouteChildren = {
-  ProtectedTasksRoute: ProtectedTasksRoute,
+  ProtectedTasksTaskIdRoute: ProtectedTasksTaskIdRoute,
+  ProtectedTasksIndexRoute: ProtectedTasksIndexRoute,
 }
 
 const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
@@ -133,17 +149,19 @@ const PublicRouteWithChildren =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof PublicRouteWithChildren
-  '/tasks': typeof ProtectedTasksRoute
   '/login': typeof PublicLoginRoute
   '/signup': typeof PublicSignupRoute
+  '/tasks/$taskId': typeof ProtectedTasksTaskIdRoute
+  '/tasks': typeof ProtectedTasksIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof PublicRouteWithChildren
-  '/tasks': typeof ProtectedTasksRoute
   '/login': typeof PublicLoginRoute
   '/signup': typeof PublicSignupRoute
+  '/tasks/$taskId': typeof ProtectedTasksTaskIdRoute
+  '/tasks': typeof ProtectedTasksIndexRoute
 }
 
 export interface FileRoutesById {
@@ -151,24 +169,26 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_protected': typeof ProtectedRouteWithChildren
   '/_public': typeof PublicRouteWithChildren
-  '/_protected/tasks': typeof ProtectedTasksRoute
   '/_public/login': typeof PublicLoginRoute
   '/_public/signup': typeof PublicSignupRoute
+  '/_protected/tasks/$taskId': typeof ProtectedTasksTaskIdRoute
+  '/_protected/tasks/': typeof ProtectedTasksIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '' | '/tasks' | '/login' | '/signup'
+  fullPaths: '/' | '' | '/login' | '/signup' | '/tasks/$taskId' | '/tasks'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '' | '/tasks' | '/login' | '/signup'
+  to: '/' | '' | '/login' | '/signup' | '/tasks/$taskId' | '/tasks'
   id:
     | '__root__'
     | '/'
     | '/_protected'
     | '/_public'
-    | '/_protected/tasks'
     | '/_public/login'
     | '/_public/signup'
+    | '/_protected/tasks/$taskId'
+    | '/_protected/tasks/'
   fileRoutesById: FileRoutesById
 }
 
@@ -205,7 +225,8 @@ export const routeTree = rootRoute
     "/_protected": {
       "filePath": "_protected.tsx",
       "children": [
-        "/_protected/tasks"
+        "/_protected/tasks/$taskId",
+        "/_protected/tasks/"
       ]
     },
     "/_public": {
@@ -215,10 +236,6 @@ export const routeTree = rootRoute
         "/_public/signup"
       ]
     },
-    "/_protected/tasks": {
-      "filePath": "_protected/tasks.tsx",
-      "parent": "/_protected"
-    },
     "/_public/login": {
       "filePath": "_public/login.tsx",
       "parent": "/_public"
@@ -226,6 +243,14 @@ export const routeTree = rootRoute
     "/_public/signup": {
       "filePath": "_public/signup.tsx",
       "parent": "/_public"
+    },
+    "/_protected/tasks/$taskId": {
+      "filePath": "_protected/tasks/$taskId.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/tasks/": {
+      "filePath": "_protected/tasks/index.tsx",
+      "parent": "/_protected"
     }
   }
 }

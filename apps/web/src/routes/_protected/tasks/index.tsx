@@ -4,11 +4,12 @@ import { Box, Button, Container, Stack, TextField, ToggleButton, ToggleButtonGro
 import { TaskResponseDto } from '@ts-fullstack-todo/api-client'
 import { useAtom, useAtomValue } from 'jotai'
 import { useState } from 'react'
-import { createTaskMutationAtom, filterAtom, updateTaskMutationAtomFamily, visibleTasksAtom } from '../../store/task'
+import { createTaskMutationAtom, filterAtom, updateTaskMutationAtomFamily, visibleTasksAtom } from '../../../store/task'
 
 import { createFileRoute } from '@tanstack/react-router'
+import { Link } from 'src/components/Link'
 
-export const Route = createFileRoute('/_protected/tasks')({
+export const Route = createFileRoute('/_protected/tasks/')({
     component: TaskListPage,
 })
 
@@ -89,9 +90,16 @@ function Task(props: TaskResponseDto) {
                 justifyContent: 'space-between',
                 cursor: 'pointer',
             }}
-            onClick={() => updateTask.mutate({ id, body: { isDone: !isDone } })}
+            onClick={() => updateTask.mutate({ body: { isDone: !isDone } })}
         >
-            <span>{title}</span>
+            <Link
+                to={'/tasks/$taskId'}
+                params={{
+                    taskId: id.toString(),
+                }}
+            >
+                {title}
+            </Link>
             {isDone && <CheckIcon color="success" />}
         </Box>
     )

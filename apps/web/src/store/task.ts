@@ -39,10 +39,10 @@ export const createTaskMutationAtom = atomWithMutation((get) => ({
     },
 }))
 
-export const updateTaskMutationAtomFamily = atomFamily((id: number) =>
+export const updateTaskMutationAtomFamily = atomFamily((id: string) =>
     atomWithMutation((get) => ({
         mutationKey: ['updateTask'],
-        mutationFn: async ({ body }: { id: number; body: UpdateTaskRequestDto }) => {
+        mutationFn: async ({ body }: { body: UpdateTaskRequestDto }) => {
             const res = await taskControllerUpdate({
                 path: { id },
                 body,
