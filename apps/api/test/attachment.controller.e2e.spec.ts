@@ -13,7 +13,7 @@ let app: INestApplication
 let server: ReturnType<typeof request>
 let prisma: PrismaService
 let token = ''
-let taskId = 0
+let taskId = '0'
 
 beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -48,16 +48,28 @@ afterAll(async () => {
     await app.close()
 })
 
-describe('POST /tasks/:id/attachments', () => {
+describe('POST /attachments/create/:taskId', () => {
     it('returns presigned url', async () => {
         const dto: CreateAttachmentRequestDto = { filename: 'hello.txt' }
         const res = await server
-            .post(`/tasks/${taskId}/attachments`)
+            .post(`/attachments/create/${taskId}`)
             .set('Authorization', `Bearer ${token}`)
             .send(dto)
             .expect(201)
 
         expect(res.body.url).toBe('https://test.com')
         expect(res.body.key).toMatch(/\.txt$/)
+    })
+
+    it('GET /attachments/:id returns presigned url', async () => {
+        const getTaskRes = await server.get(`/tasks/${taskId}`).set('Authorization', `Bearer ${token}`).expect(200)
+        const attachmentId = getTaskRes.body.attachments[0].id
+
+        const res = await request(app.getHttpServer())
+            .get(`/attachments/${attachmentId}`)
+            .set('Authorization', `Bearer ${token}`)
+            .expect(200)
+
+        expect(res.body.url).toBe('https://test.com')
     })
 })

@@ -55,7 +55,7 @@
             }
         },
         {
-            "include": ["apps/api/**"],
+            "include": ["apps/api/**", "apps/web/**"],
             "linter": {
                 "rules": {
                     "style": {

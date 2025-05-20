@@ -25,6 +25,29 @@ export type CreateTaskRequestDto = {
     title: string;
 };
 
+export type CreateTaskResponseDto = {
+    id: string;
+    title: string;
+    isDone: boolean;
+    createdAt: string;
+    updatedAt: string;
+};
+
+export type AttachmentInDto = {
+    id: string;
+    filename: string;
+    createdAt: string;
+};
+
+export type TaskResponseDto = {
+    id: string;
+    title: string;
+    isDone: boolean;
+    attachments: Array<AttachmentInDto>;
+    createdAt: string;
+    updatedAt: string;
+};
+
 export type UpdateTaskRequestDto = {
     title?: string;
     isDone?: boolean;
@@ -32,6 +55,15 @@ export type UpdateTaskRequestDto = {
 
 export type CreateAttachmentRequestDto = {
     filename: string;
+};
+
+export type CreateAttachmentResponseDto = {
+    url: string;
+    key: string;
+};
+
+export type GetAttachmentResponseDto = {
+    url: string;
 };
 
 export type AppControllerGetHelloData = {
@@ -79,8 +111,10 @@ export type TaskControllerFindAllData = {
 };
 
 export type TaskControllerFindAllResponses = {
-    200: unknown;
+    default: Array<TaskResponseDto>;
 };
+
+export type TaskControllerFindAllResponse = TaskControllerFindAllResponses[keyof TaskControllerFindAllResponses];
 
 export type TaskControllerCreateData = {
     body: CreateTaskRequestDto;
@@ -90,8 +124,10 @@ export type TaskControllerCreateData = {
 };
 
 export type TaskControllerCreateResponses = {
-    201: unknown;
+    default: CreateTaskResponseDto;
 };
+
+export type TaskControllerCreateResponse = TaskControllerCreateResponses[keyof TaskControllerCreateResponses];
 
 export type TaskControllerRemoveData = {
     body?: never;
@@ -103,8 +139,10 @@ export type TaskControllerRemoveData = {
 };
 
 export type TaskControllerRemoveResponses = {
-    200: unknown;
+    default: boolean;
 };
+
+export type TaskControllerRemoveResponse = TaskControllerRemoveResponses[keyof TaskControllerRemoveResponses];
 
 export type TaskControllerFindOneData = {
     body?: never;
@@ -116,8 +154,10 @@ export type TaskControllerFindOneData = {
 };
 
 export type TaskControllerFindOneResponses = {
-    200: unknown;
+    default: TaskResponseDto;
 };
+
+export type TaskControllerFindOneResponse = TaskControllerFindOneResponses[keyof TaskControllerFindOneResponses];
 
 export type TaskControllerUpdateData = {
     body: UpdateTaskRequestDto;
@@ -129,21 +169,40 @@ export type TaskControllerUpdateData = {
 };
 
 export type TaskControllerUpdateResponses = {
-    200: unknown;
+    default: TaskResponseDto;
 };
+
+export type TaskControllerUpdateResponse = TaskControllerUpdateResponses[keyof TaskControllerUpdateResponses];
 
 export type AttachmentControllerCreateData = {
     body: CreateAttachmentRequestDto;
     path: {
-        id: string;
+        taskId: string;
     };
     query?: never;
-    url: '/tasks/{id}/attachments';
+    url: '/attachments/create/{taskId}';
 };
 
 export type AttachmentControllerCreateResponses = {
-    201: unknown;
+    default: CreateAttachmentResponseDto;
 };
+
+export type AttachmentControllerCreateResponse = AttachmentControllerCreateResponses[keyof AttachmentControllerCreateResponses];
+
+export type AttachmentControllerGetDownloadUrlData = {
+    body?: never;
+    path: {
+        attachmentId: string;
+    };
+    query?: never;
+    url: '/attachments/{attachmentId}';
+};
+
+export type AttachmentControllerGetDownloadUrlResponses = {
+    default: GetAttachmentResponseDto;
+};
+
+export type AttachmentControllerGetDownloadUrlResponse = AttachmentControllerGetDownloadUrlResponses[keyof AttachmentControllerGetDownloadUrlResponses];
 
 export type ClientOptions = {
     baseURL: string;

@@ -1,0 +1,140 @@
+import DownloadIcon from '@mui/icons-material/Download'
+import { Box, Button, Chip, CircularProgress, Container, Divider, Stack, TextField, Typography } from '@mui/material'
+import { useParams } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
+import { AttachmentInDto } from '@ts-fullstack-todo/api-client'
+import dayjs from 'dayjs'
+import { useAtom, useAtomValue } from 'jotai'
+import { useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { updateTaskMutationAtomFamily } from '../../../store/task'
+import {
+    downloadFileMutationAtomFamily,
+    taskDetailQueryAtomFamily,
+    uploadFileMutationAtomFamily,
+} from '../../../store/taskDetail'
+
+export const Route = createFileRoute('/_protected/tasks/$taskId')({
+    component: TaskDetailPage,
+})
+
+export function TaskDetailPage() {
+    const { taskId } = useParams({ from: '/_protected/tasks/$taskId' })
+    const [{ data: task, isLoading }] = useAtom(taskDetailQueryAtomFamily(taskId))
+    const updateTask = useAtomValue(updateTaskMutationAtomFamily(taskId))
+    const uploadFile = useAtomValue(uploadFileMutationAtomFamily(taskId))
+
+    const [editTitle, setEditTitle] = useState('')
+
+    const onDrop = (files: File[]) => {
+        const file = files[0]
+        uploadFile.mutate({ file })
+    }
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+
+    if (isLoading || !task) {
+        return <CircularProgress sx={{ m: 4 }} />
+    }
+
+    return (
+        <Container maxWidth="md" sx={{ py: 4 }}>
+            {/* タイトル & ステータス */}
+            <Stack direction="row" alignItems="center" spacing={2} mb={2}>
+                <Typography variant="h4">{task.title}</Typography>
+                <Chip label={task.isDone ? 'Done' : 'Todo'} color={task.isDone ? 'success' : 'default'} />
+                <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={() =>
+                        updateTask.mutate({
+                            body: { isDone: !task.isDone },
+                        })
+                    }
+                >
+                    {task.isDone ? 'Todo に変更' : 'Done に変更'}
+                </Button>
+            </Stack>
+
+            {/* メタ情報 */}
+            <Stack direction="row" spacing={4} mb={3}>
+                <Typography variant="body2" color="text.secondary">
+                    <strong>作成日時：</strong> {dayjs(task.createdAt).format('YYYY/MM/DD HH:mm')}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    <strong>更新日時</strong> {dayjs(task.updatedAt).format('YYYY/MM/DD HH:mm')}
+                </Typography>
+            </Stack>
+
+            <Divider sx={{ my: 3 }} />
+
+            {/* タイトル編集 */}
+            <Stack direction="row" spacing={1} mb={4}>
+                <TextField
+                    size="small"
+                    placeholder="タイトルを編集"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    fullWidth
+                />
+                <Button
+                    disabled={!editTitle}
+                    onClick={() => {
+                        updateTask.mutate({ body: { title: editTitle } })
+                        setEditTitle('')
+                    }}
+                >
+                    更新
+                </Button>
+            </Stack>
+
+            {/* ファイルアップロード */}
+            <Box
+                {...getRootProps()}
+                sx={{
+                    p: 4,
+                    border: '2px dashed',
+                    borderColor: isDragActive ? 'primary.main' : 'divider',
+                    textAlign: 'center',
+                    borderRadius: 2,
+                    mb: 3,
+                    cursor: 'pointer',
+                }}
+            >
+                <input {...getInputProps()} />
+                {isDragActive
+                    ? 'ここにファイルをドロップしてください'
+                    : 'ここにファイルをドラッグ＆ドロップ、またはクリックして選択'}
+            </Box>
+
+            {/* 添付ファイル一覧 */}
+            <Typography variant="h6" gutterBottom>
+                添付ファイル
+            </Typography>
+            <Stack gap={1}>
+                {task.attachments?.map((attachment) => (
+                    <Attachment key={attachment.id} {...attachment} />
+                ))}
+                {task.attachments?.length === 0 && (
+                    <Typography color="text.secondary">添付ファイルはありません</Typography>
+                )}
+            </Stack>
+        </Container>
+    )
+}
+
+function Attachment(props: AttachmentInDto) {
+    const { id, filename, createdAt } = props
+    const downloadFile = useAtomValue(downloadFileMutationAtomFamily(id))
+
+    return (
+        <Button
+            startIcon={<DownloadIcon />}
+            onClick={async () => {
+                const res = await downloadFile.mutateAsync()
+                window.open(res.url, '_blank', 'noopener')
+            }}
+        >
+            {filename}
+        </Button>
+    )
+}

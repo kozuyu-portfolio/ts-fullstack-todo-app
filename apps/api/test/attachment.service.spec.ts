@@ -12,6 +12,7 @@ const prismaMock = {
     },
     attachment: {
         create: vi.fn(),
+        findUnique: vi.fn(),
     },
 } as unknown as PrismaService
 
@@ -30,12 +31,23 @@ describe('AttachmentService', () => {
     })
 
     it('returns presigned url and creates DB record', async () => {
-        ;(prismaMock.task.findUnique as Mock).mockResolvedValue({ id: 1, userId: 1 })
+        ;(prismaMock.task.findUnique as Mock).mockResolvedValue({ id: '1', userId: '1' })
 
-        const res = await service.create(1, 1, { filename: 'test.txt' })
+        const res = await service.create('1', '1', { filename: 'test.txt' })
 
         expect(res.url).toBe('https://test.com')
         expect(res.key).toMatch(/\.txt$/)
         expect(prismaMock.attachment.create).toHaveBeenCalled()
+    })
+
+    it('getDownloadUrl() returns presigned url', async () => {
+        ;(prismaMock.attachment.findUnique as Mock).mockResolvedValue({
+            id: 1,
+            filename: 'x.txt',
+            objectKey: 'test',
+            task: { userId: '1' },
+        })
+        const res = await service.getDownloadUrl('1', '1')
+        expect(res.url).toBe('https://test.com')
     })
 })
