@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
-import { ApiResponse } from '@nestjs/swagger'
+import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { plainToInstance } from 'class-transformer'
 import { AuthorizedUser } from '../auth/strategies/jwt.strategy'
 import { JwtPayload } from '../model/auth.model'
@@ -12,6 +12,7 @@ import { TaskService } from './task.service'
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('tasks')
+@ApiTags('tasks')
 export class TaskController {
     constructor(private readonly taskService: TaskService) {}
 
@@ -34,7 +35,7 @@ export class TaskController {
 
     @Get(':id')
     @ApiResponse({ type: TaskResponseDto })
-    async findOne(@AuthorizedUser() user: JwtPayload, @Param('id', ParseIntPipe) id: string): Promise<TaskResponseDto> {
+    async findOne(@AuthorizedUser() user: JwtPayload, @Param('id') id: string): Promise<TaskResponseDto> {
         const task = await this.taskService.findOne(user.sub, id)
         return plainToInstance(TaskResponseDto, task)
     }
@@ -43,7 +44,7 @@ export class TaskController {
     @ApiResponse({ type: TaskResponseDto })
     async update(
         @AuthorizedUser() user: JwtPayload,
-        @Param('id', ParseIntPipe) id: string,
+        @Param('id') id: string,
         @Body() dto: UpdateTaskRequestDto,
     ): Promise<TaskResponseDto> {
         const task = await this.taskService.update(user.sub, id, dto)
@@ -52,7 +53,7 @@ export class TaskController {
 
     @Delete(':id')
     @ApiResponse({ type: Boolean })
-    remove(@AuthorizedUser() user: JwtPayload, @Param('id', ParseIntPipe) id: string) {
+    remove(@AuthorizedUser() user: JwtPayload, @Param('id') id: string) {
         return this.taskService.remove(user.sub, id)
     }
 }

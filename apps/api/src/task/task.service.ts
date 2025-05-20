@@ -1,3 +1,4 @@
+import { S3Client } from '@aws-sdk/client-s3'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateTaskRequestDto } from './dto/create-task.request.dto'
@@ -5,7 +6,10 @@ import { UpdateTaskRequestDto } from './dto/update-task.request.dto'
 
 @Injectable()
 export class TaskService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService,
+        private readonly s3: S3Client,
+    ) {}
 
     create(userId: string, dto: CreateTaskRequestDto) {
         return this.prisma.task.create({
@@ -14,11 +18,11 @@ export class TaskService {
     }
 
     findAll(userId: string) {
-        return this.prisma.task.findMany({ where: { userId } })
+        return this.prisma.task.findMany({ where: { userId }, include: { attachments: true } })
     }
 
     findOne(userId: string, id: string) {
-        return this.prisma.task.findFirst({ where: { id, userId } })
+        return this.prisma.task.findFirst({ where: { id, userId }, include: { attachments: true } })
     }
 
     async update(userId: string, id: string, dto: UpdateTaskRequestDto) {
@@ -26,7 +30,7 @@ export class TaskService {
         if (!task || task.userId !== userId) {
             throw new ForbiddenException()
         }
-        return this.prisma.task.update({ where: { id }, data: dto })
+        return this.prisma.task.update({ where: { id }, data: dto, include: { attachments: true } })
     }
 
     async remove(userId: string, id: string) {
@@ -34,7 +38,15 @@ export class TaskService {
         if (!task || task.userId !== userId) {
             throw new ForbiddenException()
         }
-        await this.prisma.task.delete({ where: { id } })
+
+        const attachments = await this.prisma.attachment.findMany({ where: { taskId: id } })
+        this.prisma.$transaction(async (prisma) => {
+            await prisma.attachment.deleteMany({ where: { taskId: id } })
+            await prisma.task.delete({ where: { id } })
+        })
+        // TODO: S3オブジェクトも削除する
+        // p-throttle を使って並列実行するか
+
         return { deleted: true }
     }
 }

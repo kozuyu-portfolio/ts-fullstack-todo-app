@@ -1,10 +1,11 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { generateUUIDv7 } from '@ts-fullstack-todo/shared'
 import { lookup as mime } from 'mime-types'
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateAttachmentRequestDto } from './dto/create-attachment.request.dto'
+import { GetAttachmentResponseDto } from './dto/get-attachment.response.dto'
 
 @Injectable()
 export class AttachmentService {
@@ -39,17 +40,31 @@ export class AttachmentService {
             },
         })
 
-        const url = await getSignedUrl(this.s3, command, { expiresIn: 900 })
+        const url = await getSignedUrl(this.s3, command, { expiresIn: 300 })
 
         await this.prisma.attachment.create({
             data: {
                 filename: dto.filename,
                 objectKey,
-                url: `s3://${this.bucket}/${objectKey}`, // TODO: Cloudfront 経由でのダウンロードURLに変更する
                 taskId,
             },
         })
 
         return { url, key: objectKey }
+    }
+
+    async getDownloadUrl(userId: string, attachmentId: string): Promise<GetAttachmentResponseDto> {
+        const attachment = await this.prisma.attachment.findUnique({
+            where: { id: attachmentId },
+            include: { task: true },
+        })
+        if (!attachment || attachment.task.userId !== userId) {
+            throw new ForbiddenException()
+        }
+
+        const command = new GetObjectCommand({ Bucket: this.bucket, Key: attachment.objectKey })
+        const url = await getSignedUrl(this.s3, command, { expiresIn: 300 })
+
+        return { url }
     }
 }

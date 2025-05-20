@@ -104,7 +104,7 @@
           }
         },
         "tags": [
-          "Task"
+          "tasks"
         ]
       },
       "get": {
@@ -126,7 +126,7 @@
           }
         },
         "tags": [
-          "Task"
+          "tasks"
         ]
       }
     },
@@ -156,7 +156,7 @@
           }
         },
         "tags": [
-          "Task"
+          "tasks"
         ]
       },
       "patch": {
@@ -194,7 +194,7 @@
           }
         },
         "tags": [
-          "Task"
+          "tasks"
         ]
       },
       "delete": {
@@ -222,16 +222,16 @@
           }
         },
         "tags": [
-          "Task"
+          "tasks"
         ]
       }
     },
-    "/tasks/{id}/attachments": {
+    "/attachments/create/{taskId}": {
       "post": {
         "operationId": "AttachmentController_create",
         "parameters": [
           {
-            "name": "id",
+            "name": "taskId",
             "required": true,
             "in": "path",
             "schema": {
@@ -250,12 +250,49 @@
           }
         },
         "responses": {
-          "201": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAttachmentResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
-          "Attachment"
+          "attachments"
+        ]
+      }
+    },
+    "/attachments/{attachmentId}": {
+      "get": {
+        "operationId": "AttachmentController_getDownloadUrl",
+        "parameters": [
+          {
+            "name": "attachmentId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAttachmentResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "attachments"
         ]
       }
     }
@@ -338,7 +375,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "number"
+            "type": "string"
           },
           "title": {
             "type": "string"
@@ -363,17 +400,43 @@
           "updatedAt"
         ]
       },
+      "AttachmentInDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "filename",
+          "createdAt"
+        ]
+      },
       "TaskResponseDto": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "number"
+            "type": "string"
           },
           "title": {
             "type": "string"
           },
           "isDone": {
             "type": "boolean"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AttachmentInDto"
+            }
           },
           "createdAt": {
             "type": "string",
@@ -388,6 +451,7 @@
           "id",
           "title",
           "isDone",
+          "attachments",
           "createdAt",
           "updatedAt"
         ]
@@ -412,6 +476,32 @@
         },
         "required": [
           "filename"
+        ]
+      },
+      "CreateAttachmentResponseDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "key"
+        ]
+      },
+      "GetAttachmentResponseDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url"
         ]
       }
     }

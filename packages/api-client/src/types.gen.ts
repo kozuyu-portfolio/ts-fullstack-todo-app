@@ -26,17 +26,24 @@ export type CreateTaskRequestDto = {
 };
 
 export type CreateTaskResponseDto = {
-    id: number;
+    id: string;
     title: string;
     isDone: boolean;
     createdAt: string;
     updatedAt: string;
 };
 
+export type AttachmentInDto = {
+    id: string;
+    filename: string;
+    createdAt: string;
+};
+
 export type TaskResponseDto = {
-    id: number;
+    id: string;
     title: string;
     isDone: boolean;
+    attachments: Array<AttachmentInDto>;
     createdAt: string;
     updatedAt: string;
 };
@@ -48,6 +55,15 @@ export type UpdateTaskRequestDto = {
 
 export type CreateAttachmentRequestDto = {
     filename: string;
+};
+
+export type CreateAttachmentResponseDto = {
+    url: string;
+    key: string;
+};
+
+export type GetAttachmentResponseDto = {
+    url: string;
 };
 
 export type AppControllerGetHelloData = {
@@ -161,15 +177,32 @@ export type TaskControllerUpdateResponse = TaskControllerUpdateResponses[keyof T
 export type AttachmentControllerCreateData = {
     body: CreateAttachmentRequestDto;
     path: {
-        id: string;
+        taskId: string;
     };
     query?: never;
-    url: '/tasks/{id}/attachments';
+    url: '/attachments/create/{taskId}';
 };
 
 export type AttachmentControllerCreateResponses = {
-    201: unknown;
+    default: CreateAttachmentResponseDto;
 };
+
+export type AttachmentControllerCreateResponse = AttachmentControllerCreateResponses[keyof AttachmentControllerCreateResponses];
+
+export type AttachmentControllerGetDownloadUrlData = {
+    body?: never;
+    path: {
+        attachmentId: string;
+    };
+    query?: never;
+    url: '/attachments/{attachmentId}';
+};
+
+export type AttachmentControllerGetDownloadUrlResponses = {
+    default: GetAttachmentResponseDto;
+};
+
+export type AttachmentControllerGetDownloadUrlResponse = AttachmentControllerGetDownloadUrlResponses[keyof AttachmentControllerGetDownloadUrlResponses];
 
 export type ClientOptions = {
     baseURL: string;
