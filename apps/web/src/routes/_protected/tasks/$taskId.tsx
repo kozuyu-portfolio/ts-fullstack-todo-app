@@ -1,12 +1,27 @@
 import DownloadIcon from '@mui/icons-material/Download'
-import { Box, Button, Chip, CircularProgress, Container, Divider, Stack, TextField, Typography } from '@mui/material'
+import {
+    Box,
+    Button,
+    Chip,
+    CircularProgress,
+    Container,
+    Divider,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    Stack,
+    TextField,
+    Typography,
+} from '@mui/material'
 import { useParams } from '@tanstack/react-router'
 import { createFileRoute } from '@tanstack/react-router'
 import { AttachmentInDto } from '@ts-fullstack-todo/api-client'
 import dayjs from 'dayjs'
 import { useAtom, useAtomValue } from 'jotai'
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { Controller, useForm } from 'react-hook-form'
 import { updateTaskMutationAtomFamily } from '../../../store/task'
 import {
     downloadFileMutationAtomFamily,
@@ -18,13 +33,57 @@ export const Route = createFileRoute('/_protected/tasks/$taskId')({
     component: TaskDetailPage,
 })
 
+type FormValues = {
+    title: string
+    isDone: string
+    deadline: string
+}
+
 export function TaskDetailPage() {
     const { taskId } = useParams({ from: '/_protected/tasks/$taskId' })
     const [{ data: task, isLoading }] = useAtom(taskDetailQueryAtomFamily(taskId))
     const updateTask = useAtomValue(updateTaskMutationAtomFamily(taskId))
     const uploadFile = useAtomValue(uploadFileMutationAtomFamily(taskId))
 
-    const [editTitle, setEditTitle] = useState('')
+    const { control, handleSubmit, reset, watch } = useForm<FormValues>({
+        defaultValues: {
+            title: task?.title ?? '',
+            isDone: task?.isDone ? 'done' : 'todo',
+            deadline: task?.deadline
+                ? dayjs(task.deadline).format('YYYY-MM-DDTHH:mm')
+                : dayjs().format('YYYY-MM-DDTHH:mm'),
+        },
+    })
+
+    // 値の変更を監視して即時更新
+    useEffect(() => {
+        const subscription = watch((data, { type }) => {
+            if (type === undefined) {
+                return
+            }
+            updateTask.mutate({
+                body: {
+                    title: data.title,
+                    isDone: data.isDone === 'done',
+                    deadline: data.deadline ? dayjs(data.deadline).toISOString() : undefined,
+                },
+            })
+        })
+        return () => subscription.unsubscribe()
+    }, [watch, updateTask])
+
+    useEffect(() => {
+        if (!task) {
+            return
+        }
+        reset({
+            title: task.title ?? '',
+            isDone: task.isDone ? 'done' : 'todo',
+            deadline: task.deadline
+                ? dayjs(task.deadline).format('YYYY-MM-DDTHH:mm')
+                : dayjs().format('YYYY-MM-DDTHH:mm'),
+        })
+    }, [task, reset])
 
     const onDrop = (files: File[]) => {
         const file = files[0]
@@ -42,17 +101,6 @@ export function TaskDetailPage() {
             <Stack direction="row" alignItems="center" spacing={2} mb={2}>
                 <Typography variant="h4">{task.title}</Typography>
                 <Chip label={task.isDone ? 'Done' : 'Todo'} color={task.isDone ? 'success' : 'default'} />
-                <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() =>
-                        updateTask.mutate({
-                            body: { isDone: !task.isDone },
-                        })
-                    }
-                >
-                    {task.isDone ? 'Todo に変更' : 'Done に変更'}
-                </Button>
             </Stack>
 
             {/* メタ情報 */}
@@ -65,26 +113,79 @@ export function TaskDetailPage() {
                 </Typography>
             </Stack>
 
-            <Divider sx={{ my: 3 }} />
+            {/* タスクステータス */}
+            <Stack direction="row" spacing={2} mb={3}>
+                <Controller
+                    name="isDone"
+                    control={control}
+                    render={({ field }) => (
+                        <FormControl size="small">
+                            <InputLabel id="task-status-label">ステータス</InputLabel>
+                            <Select
+                                {...field}
+                                labelId="task-status-label"
+                                size="small"
+                                label="ステータス"
+                                value={field.value}
+                                onChange={(e) => field.onChange(e.target.value)}
+                            >
+                                <MenuItem value="todo">Todo</MenuItem>
+                                <MenuItem value="done">Done</MenuItem>
+                            </Select>
+                        </FormControl>
+                    )}
+                />
+            </Stack>
+
+            {/* 期限 */}
+            <Stack direction="row" spacing={2} mb={3}>
+                <Controller
+                    name="deadline"
+                    control={control}
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            size="small"
+                            type="datetime-local"
+                            label="期限"
+                            value={field.value}
+                            onChange={field.onChange}
+                        />
+                    )}
+                />
+            </Stack>
 
             {/* タイトル編集 */}
             <Stack direction="row" spacing={1} mb={4}>
-                <TextField
-                    size="small"
-                    placeholder="タイトルを編集"
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                    fullWidth
+                <Controller
+                    name="title"
+                    control={control}
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            size="small"
+                            placeholder="タイトルを編集"
+                            value={field.value}
+                            onChange={field.onChange}
+                            fullWidth
+                        />
+                    )}
                 />
-                <Button
-                    disabled={!editTitle}
-                    onClick={() => {
-                        updateTask.mutate({ body: { title: editTitle } })
-                        setEditTitle('')
-                    }}
-                >
-                    更新
-                </Button>
+            </Stack>
+
+            <Divider sx={{ my: 3 }} />
+
+            {/* 添付ファイル一覧 */}
+            <Typography variant="h6" gutterBottom>
+                添付ファイル
+            </Typography>
+            <Stack gap={1}>
+                {task.attachments?.map((attachment) => (
+                    <Attachment key={attachment.id} {...attachment} />
+                ))}
+                {task.attachments?.length === 0 && (
+                    <Typography color="text.secondary">添付ファイルはありません</Typography>
+                )}
             </Stack>
 
             {/* ファイルアップロード */}
@@ -105,25 +206,12 @@ export function TaskDetailPage() {
                     ? 'ここにファイルをドロップしてください'
                     : 'ここにファイルをドラッグ＆ドロップ、またはクリックして選択'}
             </Box>
-
-            {/* 添付ファイル一覧 */}
-            <Typography variant="h6" gutterBottom>
-                添付ファイル
-            </Typography>
-            <Stack gap={1}>
-                {task.attachments?.map((attachment) => (
-                    <Attachment key={attachment.id} {...attachment} />
-                ))}
-                {task.attachments?.length === 0 && (
-                    <Typography color="text.secondary">添付ファイルはありません</Typography>
-                )}
-            </Stack>
         </Container>
     )
 }
 
 function Attachment(props: AttachmentInDto) {
-    const { id, filename, createdAt } = props
+    const { id, filename } = props
     const downloadFile = useAtomValue(downloadFileMutationAtomFamily(id))
 
     return (

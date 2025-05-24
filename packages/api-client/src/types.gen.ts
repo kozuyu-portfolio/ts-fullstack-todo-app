@@ -23,12 +23,17 @@ export type CreateTaskRequestDto = {
      * タスクのタイトル
      */
     title: string;
+    /**
+     * タスクの期限
+     */
+    deadline?: string;
 };
 
 export type CreateTaskResponseDto = {
     id: string;
     title: string;
     isDone: boolean;
+    deadline?: string;
     createdAt: string;
     updatedAt: string;
 };
@@ -43,6 +48,7 @@ export type TaskResponseDto = {
     id: string;
     title: string;
     isDone: boolean;
+    deadline?: string;
     attachments: Array<AttachmentInDto>;
     createdAt: string;
     updatedAt: string;
@@ -51,6 +57,7 @@ export type TaskResponseDto = {
 export type UpdateTaskRequestDto = {
     title?: string;
     isDone?: boolean;
+    deadline?: string;
 };
 
 export type CreateAttachmentRequestDto = {

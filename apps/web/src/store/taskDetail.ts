@@ -10,8 +10,6 @@ import { atomWithMutation, atomWithQuery, queryClientAtom } from 'jotai-tanstack
 import { atomFamily } from 'jotai/utils'
 import { apiClient } from 'src/api/client'
 
-const auth = () => ({ Authorization: `Bearer ${localStorage.getItem('token')}` })
-
 export const taskDetailQueryAtomFamily = atomFamily((id: string) =>
     atomWithQuery<TaskResponseDto>(() => ({
         queryKey: ['tasks', id],
