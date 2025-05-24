@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class CreateTaskResponseDto {
     @ApiProperty({ type: String })
@@ -9,6 +9,9 @@ export class CreateTaskResponseDto {
 
     @ApiProperty({ type: Boolean })
     isDone!: boolean
+
+    @ApiPropertyOptional({ type: String, format: 'date-time' })
+    deadline?: Date
 
     @ApiProperty({ type: String, format: 'date-time' })
     createdAt!: Date

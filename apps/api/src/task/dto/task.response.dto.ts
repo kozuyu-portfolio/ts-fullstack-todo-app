@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsObject } from 'class-validator'
 import { AttachmentModel } from 'model/attachment.model'
 
@@ -24,6 +24,9 @@ export class TaskResponseDto {
 
     @ApiProperty({ type: Boolean })
     isDone!: boolean
+
+    @ApiPropertyOptional({ type: String, format: 'date-time' })
+    deadline?: Date
 
     @ApiProperty({ type: AttachmentInDto, isArray: true })
     @IsObject({ each: true })

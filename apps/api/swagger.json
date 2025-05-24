@@ -365,6 +365,11 @@
           "title": {
             "type": "string",
             "description": "タスクのタイトル"
+          },
+          "deadline": {
+            "format": "date-time",
+            "type": "string",
+            "description": "タスクの期限"
           }
         },
         "required": [
@@ -382,6 +387,10 @@
           },
           "isDone": {
             "type": "boolean"
+          },
+          "deadline": {
+            "type": "string",
+            "format": "date-time"
           },
           "createdAt": {
             "type": "string",
@@ -432,6 +441,10 @@
           "isDone": {
             "type": "boolean"
           },
+          "deadline": {
+            "type": "string",
+            "format": "date-time"
+          },
           "attachments": {
             "type": "array",
             "items": {
@@ -464,6 +477,10 @@
           },
           "isDone": {
             "type": "boolean"
+          },
+          "deadline": {
+            "format": "date-time",
+            "type": "string"
           }
         }
       },
