@@ -17,7 +17,7 @@ export function Header(props: Props) {
     const toggle = useSetAtom(toggleThemeAtom)
     return (
         <AppBar position="sticky" color="primary" {...rest}>
-            <StyledToolbar>
+            <StyledToolbar sx={{ justifyContent: 'space-between' }}>
                 {children}
                 <IconButton aria-label="Toggle dark mode" onClick={toggle} edge="end" size="large">
                     {mode === 'light' ? <DarkIcon style={{ color: 'yellow' }} /> : <LightIcon />}
