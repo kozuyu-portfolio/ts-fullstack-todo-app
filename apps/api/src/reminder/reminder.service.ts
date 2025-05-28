@@ -1,5 +1,6 @@
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2'
 import { Injectable, Logger } from '@nestjs/common'
+import { TaskStatus } from '@prisma/client'
 import nodemailer from 'nodemailer'
 import { PrismaService } from '../prisma/prisma.service'
 import { SendReminderDto } from './dto/send-reminder.dto'
@@ -21,7 +22,7 @@ export class ReminderService {
             where: {
                 tasks: {
                     some: {
-                        isDone: false,
+                        status: { not: TaskStatus.COMPLETED },
                         deadline: { lte: new Date(Date.now() + threshold) },
                     },
                 },
@@ -29,7 +30,7 @@ export class ReminderService {
             include: {
                 tasks: {
                     where: {
-                        isDone: false,
+                        status: { not: TaskStatus.COMPLETED },
                         deadline: { lte: new Date(Date.now() + threshold) },
                     },
                 },

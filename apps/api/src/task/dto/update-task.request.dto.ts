@@ -1,6 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
+import { TaskStatus } from '@prisma/client'
 import { Type } from 'class-transformer'
-import { IsBoolean, IsDate, IsOptional, IsString } from 'class-validator'
+import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator'
 
 export class UpdateTaskRequestDto {
     @ApiPropertyOptional({ type: String })
@@ -8,10 +9,10 @@ export class UpdateTaskRequestDto {
     @IsOptional()
     title?: string
 
-    @ApiPropertyOptional({ type: Boolean })
-    @IsBoolean()
+    @ApiPropertyOptional({ enum: TaskStatus })
+    @IsEnum(TaskStatus)
     @IsOptional()
-    isDone?: boolean
+    status?: TaskStatus
 
     @ApiPropertyOptional({ type: Date })
     @IsDate()
