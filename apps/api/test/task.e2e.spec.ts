@@ -2,6 +2,7 @@
 
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
+import { TaskStatus } from '@prisma/client'
 import request from 'supertest'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { AppModule } from '../src/app.module'
@@ -60,10 +61,10 @@ describe('TaskController E2E', () => {
         const res = await server
             .patch(`/tasks/${taskId}`)
             .set('Authorization', `Bearer ${token}`)
-            .send({ isDone: true })
+            .send({ status: TaskStatus.COMPLETED })
             .expect(200)
 
-        expect(res.body.isDone).toBe(true)
+        expect(res.body.status).toBe(TaskStatus.COMPLETED)
     })
 
     it('DELETE /tasks/:id', async () => {
