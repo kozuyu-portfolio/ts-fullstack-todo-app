@@ -1,5 +1,5 @@
 import CheckIcon from '@mui/icons-material/Check'
-import ClearIcon from '@mui/icons-material/Clear'
+import TimelapseIcon from '@mui/icons-material/Timelapse'
 import { Box, Button, Container, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
 import { TaskResponseDto } from '@ts-fullstack-todo/api-client'
 import { useAtom, useAtomValue } from 'jotai'
@@ -8,6 +8,7 @@ import { createTaskMutationAtom, filterAtom, updateTaskMutationAtomFamily, visib
 
 import { createFileRoute } from '@tanstack/react-router'
 import { Link } from 'src/components/Link'
+import { TASK_STATUS, TaskStatus } from 'src/task-status'
 
 export const Route = createFileRoute('/_protected/tasks/')({
     component: TaskListPage,
@@ -55,12 +56,9 @@ export function TaskListPage() {
                 sx={{ mb: 2 }}
             >
                 <ToggleButton value="all">All</ToggleButton>
-                <ToggleButton value="todo">
-                    <ClearIcon fontSize="small" /> Todo
-                </ToggleButton>
-                <ToggleButton value="done">
-                    <CheckIcon fontSize="small" /> Done
-                </ToggleButton>
+                <ToggleButton value={String(TASK_STATUS.NOT_STARTED)}>未着手</ToggleButton>
+                <ToggleButton value={String(TASK_STATUS.IN_PROGRESS)}>進行中</ToggleButton>
+                <ToggleButton value={String(TASK_STATUS.COMPLETED)}>完了</ToggleButton>
             </ToggleButtonGroup>
 
             {/* 一覧 */}
@@ -75,7 +73,7 @@ export function TaskListPage() {
 }
 
 function Task(props: TaskResponseDto) {
-    const { id, title, isDone } = props
+    const { id, title, status } = props
     const updateTask = useAtomValue(updateTaskMutationAtomFamily(id))
     return (
         <Box
@@ -90,7 +88,14 @@ function Task(props: TaskResponseDto) {
                 justifyContent: 'space-between',
                 cursor: 'pointer',
             }}
-            onClick={() => updateTask.mutate({ body: { isDone: !isDone } })}
+            onClick={() => {
+                const nextStatusMap: Record<string, TaskStatus> = {
+                    [TASK_STATUS.NOT_STARTED as string]: TASK_STATUS.IN_PROGRESS,
+                    [TASK_STATUS.IN_PROGRESS as string]: TASK_STATUS.COMPLETED,
+                    [TASK_STATUS.COMPLETED as string]: TASK_STATUS.NOT_STARTED,
+                }
+                updateTask.mutate({ body: { status: nextStatusMap[status] } })
+            }}
         >
             <Link
                 to={'/tasks/$taskId'}
@@ -100,7 +105,8 @@ function Task(props: TaskResponseDto) {
             >
                 {title}
             </Link>
-            {isDone && <CheckIcon color="success" />}
+            {status === TASK_STATUS.COMPLETED && <CheckIcon color="success" />}
+            {status === TASK_STATUS.IN_PROGRESS && <TimelapseIcon color="warning" />}
         </Box>
     )
 }

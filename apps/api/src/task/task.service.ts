@@ -1,5 +1,6 @@
 import { S3Client } from '@aws-sdk/client-s3'
 import { ForbiddenException, Injectable } from '@nestjs/common'
+import { TaskStatus } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateTaskRequestDto } from './dto/create-task.request.dto'
 import { UpdateTaskRequestDto } from './dto/update-task.request.dto'
@@ -17,8 +18,11 @@ export class TaskService {
         })
     }
 
-    findAll(userId: string) {
-        return this.prisma.task.findMany({ where: { userId }, include: { attachments: true } })
+    findAll(userId: string, status?: TaskStatus) {
+        return this.prisma.task.findMany({
+            where: { userId, ...(status && { status }) },
+            include: { attachments: true },
+        })
     }
 
     findOne(userId: string, id: string) {

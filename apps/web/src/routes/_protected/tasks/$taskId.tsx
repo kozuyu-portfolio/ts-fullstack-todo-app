@@ -22,6 +22,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Controller, useForm } from 'react-hook-form'
+import { TASK_STATUS, TaskStatus } from 'src/task-status'
 import { updateTaskMutationAtomFamily } from '../../../store/task'
 import {
     downloadFileMutationAtomFamily,
@@ -35,7 +36,7 @@ export const Route = createFileRoute('/_protected/tasks/$taskId')({
 
 type FormValues = {
     title: string
-    isDone: string
+    status: TaskStatus
     deadline: string
 }
 
@@ -48,7 +49,7 @@ export function TaskDetailPage() {
     const { control, handleSubmit, reset, watch } = useForm<FormValues>({
         defaultValues: {
             title: task?.title ?? '',
-            isDone: task?.isDone ? 'done' : 'todo',
+            status: task?.status,
             deadline: task?.deadline
                 ? dayjs(task.deadline).format('YYYY-MM-DDTHH:mm')
                 : dayjs().format('YYYY-MM-DDTHH:mm'),
@@ -64,7 +65,7 @@ export function TaskDetailPage() {
             updateTask.mutate({
                 body: {
                     title: data.title,
-                    isDone: data.isDone === 'done',
+                    status: data.status,
                     deadline: data.deadline ? dayjs(data.deadline).toISOString() : undefined,
                 },
             })
@@ -78,7 +79,7 @@ export function TaskDetailPage() {
         }
         reset({
             title: task.title ?? '',
-            isDone: task.isDone ? 'done' : 'todo',
+            status: task.status,
             deadline: task.deadline
                 ? dayjs(task.deadline).format('YYYY-MM-DDTHH:mm')
                 : dayjs().format('YYYY-MM-DDTHH:mm'),
@@ -100,7 +101,7 @@ export function TaskDetailPage() {
             {/* タイトル & ステータス */}
             <Stack direction="row" alignItems="center" spacing={2} mb={2}>
                 <Typography variant="h4">{task.title}</Typography>
-                <Chip label={task.isDone ? 'Done' : 'Todo'} color={task.isDone ? 'success' : 'default'} />
+                <Chip label={taskStatusLabelMap[task.status]} color={taskStatusColorMap[task.status]} />
             </Stack>
 
             {/* メタ情報 */}
@@ -116,7 +117,7 @@ export function TaskDetailPage() {
             {/* タスクステータス */}
             <Stack direction="row" spacing={2} mb={3}>
                 <Controller
-                    name="isDone"
+                    name="status"
                     control={control}
                     render={({ field }) => (
                         <FormControl size="small">
@@ -126,11 +127,12 @@ export function TaskDetailPage() {
                                 labelId="task-status-label"
                                 size="small"
                                 label="ステータス"
-                                value={field.value}
+                                value={String(field.value || TASK_STATUS.NOT_STARTED)}
                                 onChange={(e) => field.onChange(e.target.value)}
                             >
-                                <MenuItem value="todo">Todo</MenuItem>
-                                <MenuItem value="done">Done</MenuItem>
+                                <MenuItem value={String(TASK_STATUS.NOT_STARTED)}>未着手</MenuItem>
+                                <MenuItem value={String(TASK_STATUS.IN_PROGRESS)}>進行中</MenuItem>
+                                <MenuItem value={String(TASK_STATUS.COMPLETED)}>完了</MenuItem>
                             </Select>
                         </FormControl>
                     )}
@@ -226,3 +228,15 @@ function Attachment(props: AttachmentInDto) {
         </Button>
     )
 }
+
+const taskStatusLabelMap = {
+    NOT_STARTED: '未着手',
+    IN_PROGRESS: '進行中',
+    COMPLETED: '完了',
+} as const
+
+const taskStatusColorMap = {
+    NOT_STARTED: 'default',
+    IN_PROGRESS: 'warning',
+    COMPLETED: 'success',
+} as const

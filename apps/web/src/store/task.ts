@@ -11,7 +11,7 @@ import { atomWithMutation, atomWithQuery, queryClientAtom } from 'jotai-tanstack
 import { atomFamily } from 'jotai/utils'
 import { apiClient } from 'src/api/client'
 
-export const filterAtom = atom<'all' | 'todo' | 'done'>('all')
+export const filterAtom = atom<CreateTaskRequestDto['status'] | 'all'>('all')
 
 export const tasksQueryAtom = atomWithQuery<TaskResponseDto[]>(() => ({
     queryKey: ['tasks'],
@@ -63,11 +63,8 @@ export const updateTaskMutationAtomFamily = atomFamily((id: string) =>
 export const visibleTasksAtom = atom((get) => {
     const filter = get(filterAtom)
     const tasks = get(tasksQueryAtom).data
-    if (filter === 'todo') {
-        return tasks?.filter((t) => !t.isDone) ?? []
+    if (filter === 'all') {
+        return tasks ?? []
     }
-    if (filter === 'done') {
-        return tasks?.filter((t) => t.isDone) ?? []
-    }
-    return tasks ?? []
+    return tasks?.filter((task) => task.status === filter) ?? []
 })

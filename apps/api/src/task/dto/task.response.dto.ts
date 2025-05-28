@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { TaskStatus } from '@prisma/client'
 import { IsObject } from 'class-validator'
 import { AttachmentModel } from 'model/attachment.model'
 
@@ -22,8 +23,8 @@ export class TaskResponseDto {
     @ApiProperty({ type: String })
     title!: string
 
-    @ApiProperty({ type: Boolean })
-    isDone!: boolean
+    @ApiProperty({ enum: TaskStatus })
+    status!: TaskStatus
 
     @ApiPropertyOptional({ type: String, format: 'date-time' })
     deadline?: Date

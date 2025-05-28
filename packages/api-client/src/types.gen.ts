@@ -24,6 +24,10 @@ export type CreateTaskRequestDto = {
      */
     title: string;
     /**
+     * タスクのステータス
+     */
+    status?: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
+    /**
      * タスクの期限
      */
     deadline?: string;
@@ -32,7 +36,7 @@ export type CreateTaskRequestDto = {
 export type CreateTaskResponseDto = {
     id: string;
     title: string;
-    isDone: boolean;
+    status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
     deadline?: string;
     createdAt: string;
     updatedAt: string;
@@ -47,7 +51,7 @@ export type AttachmentInDto = {
 export type TaskResponseDto = {
     id: string;
     title: string;
-    isDone: boolean;
+    status: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
     deadline?: string;
     attachments: Array<AttachmentInDto>;
     createdAt: string;
@@ -56,7 +60,7 @@ export type TaskResponseDto = {
 
 export type UpdateTaskRequestDto = {
     title?: string;
-    isDone?: boolean;
+    status?: 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED';
     deadline?: string;
 };
 
