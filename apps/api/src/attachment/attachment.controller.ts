@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { ApiResponse, ApiTags } from '@nestjs/swagger'
-import { AuthorizedUser } from '../auth/strategies/jwt.strategy'
-import { JwtPayload } from '../model/auth.model'
+import { AuthorizedUser } from '../auth/decorators/authorized-user.decorator'
+import { AccessTokenPayload } from '../model/auth.model'
 import { AttachmentService } from './attachment.service'
 import { CreateAttachmentRequestDto } from './dto/create-attachment.request.dto'
 import { CreateAttachmentResponseDto } from './dto/create-attachment.response.dto'
@@ -17,7 +17,7 @@ export class AttachmentController {
     @Post('create/:taskId')
     @ApiResponse({ type: CreateAttachmentResponseDto })
     create(
-        @AuthorizedUser() user: JwtPayload,
+        @AuthorizedUser() user: AccessTokenPayload,
         @Param('taskId') taskId: string,
         @Body() dto: CreateAttachmentRequestDto,
     ): Promise<CreateAttachmentResponseDto> {
@@ -27,7 +27,7 @@ export class AttachmentController {
     @Get(':attachmentId')
     @ApiResponse({ type: GetAttachmentResponseDto })
     getDownloadUrl(
-        @AuthorizedUser() user: JwtPayload,
+        @AuthorizedUser() user: AccessTokenPayload,
         @Param('attachmentId') attachmentId: string,
     ): Promise<GetAttachmentResponseDto> {
         return this.service.getDownloadUrl(user.sub, attachmentId)

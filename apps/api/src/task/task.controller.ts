@@ -2,8 +2,8 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@n
 import { AuthGuard } from '@nestjs/passport'
 import { ApiResponse, ApiTags } from '@nestjs/swagger'
 import { plainToInstance } from 'class-transformer'
-import { AuthorizedUser } from '../auth/strategies/jwt.strategy'
-import { JwtPayload } from '../model/auth.model'
+import { AuthorizedUser } from '../auth/decorators/authorized-user.decorator'
+import { AccessTokenPayload } from '../model/auth.model'
 import { CreateTaskRequestDto } from './dto/create-task.request.dto'
 import { CreateTaskResponseDto } from './dto/create-task.response.dto'
 import { TaskResponseDto } from './dto/task.response.dto'
@@ -19,7 +19,7 @@ export class TaskController {
     @Post()
     @ApiResponse({ type: CreateTaskResponseDto })
     async create(
-        @AuthorizedUser() user: JwtPayload,
+        @AuthorizedUser() user: AccessTokenPayload,
         @Body() dto: CreateTaskRequestDto,
     ): Promise<CreateTaskResponseDto> {
         const task = await this.taskService.create(user.sub, dto)
@@ -28,14 +28,14 @@ export class TaskController {
 
     @Get()
     @ApiResponse({ type: [TaskResponseDto] })
-    async findAll(@AuthorizedUser() user: JwtPayload): Promise<TaskResponseDto[]> {
+    async findAll(@AuthorizedUser() user: AccessTokenPayload): Promise<TaskResponseDto[]> {
         const tasks = await this.taskService.findAll(user.sub)
         return tasks.map((t) => plainToInstance(TaskResponseDto, t))
     }
 
     @Get(':id')
     @ApiResponse({ type: TaskResponseDto })
-    async findOne(@AuthorizedUser() user: JwtPayload, @Param('id') id: string): Promise<TaskResponseDto> {
+    async findOne(@AuthorizedUser() user: AccessTokenPayload, @Param('id') id: string): Promise<TaskResponseDto> {
         const task = await this.taskService.findOne(user.sub, id)
         return plainToInstance(TaskResponseDto, task)
     }
@@ -43,7 +43,7 @@ export class TaskController {
     @Patch(':id')
     @ApiResponse({ type: TaskResponseDto })
     async update(
-        @AuthorizedUser() user: JwtPayload,
+        @AuthorizedUser() user: AccessTokenPayload,
         @Param('id') id: string,
         @Body() dto: UpdateTaskRequestDto,
     ): Promise<TaskResponseDto> {
@@ -53,7 +53,7 @@ export class TaskController {
 
     @Delete(':id')
     @ApiResponse({ type: Boolean })
-    remove(@AuthorizedUser() user: JwtPayload, @Param('id') id: string) {
+    remove(@AuthorizedUser() user: AccessTokenPayload, @Param('id') id: string) {
         return this.taskService.remove(user.sub, id)
     }
 }

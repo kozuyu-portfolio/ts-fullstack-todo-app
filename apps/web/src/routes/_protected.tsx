@@ -1,6 +1,8 @@
 import { Box, Stack, Typography } from '@mui/material'
-import { Outlet, createFileRoute, redirect } from '@tanstack/react-router'
+import { Outlet, createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
+import { authControllerSignout } from '@ts-fullstack-todo/api-client'
 import { Suspense, createContext } from 'react'
+import { apiClient } from 'src/api/client'
 import { Header } from 'src/components/Header'
 import { Link } from 'src/components/Link'
 import { Loading } from 'src/components/Loading'
@@ -18,6 +20,7 @@ export const Route = createFileRoute('/_protected')({
 })
 
 function Protected() {
+    const navigate = useNavigate()
     return (
         <Box sx={{ display: 'grid', gridTemplateRows: 'min-content minmax(0, 1fr)', height: '100dvh' }}>
             <Header>
@@ -31,14 +34,19 @@ function Protected() {
                 </Link>
 
                 <Link
-                    to="/login"
                     variant="body1"
                     color="inherit"
                     underline="none"
                     noWrap
                     sx={{ ml: 'auto' }}
-                    onClick={() => {
-                        localStorage.removeItem('token')
+                    onClick={async () => {
+                        try {
+                            await authControllerSignout({ client: apiClient })
+                            localStorage.removeItem('token')
+                        } catch {
+                        } finally {
+                            navigate({ to: '/login' })
+                        }
                     }}
                 >
                     <Box paddingX={2}>ログアウト</Box>
