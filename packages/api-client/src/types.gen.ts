@@ -18,6 +18,10 @@ export type SignInResponseDto = {
     access_token: string;
 };
 
+export type RefreshResponseDto = {
+    access_token: string;
+};
+
 export type CreateTaskRequestDto = {
     /**
      * タスクのタイトル
@@ -113,6 +117,30 @@ export type AuthControllerSigninResponses = {
 };
 
 export type AuthControllerSigninResponse = AuthControllerSigninResponses[keyof AuthControllerSigninResponses];
+
+export type AuthControllerRefreshData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/refresh';
+};
+
+export type AuthControllerRefreshResponses = {
+    default: RefreshResponseDto;
+};
+
+export type AuthControllerRefreshResponse = AuthControllerRefreshResponses[keyof AuthControllerRefreshResponses];
+
+export type AuthControllerSignoutData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/auth/signout';
+};
+
+export type AuthControllerSignoutResponses = {
+    200: unknown;
+};
 
 export type TaskControllerFindAllData = {
     body?: never;

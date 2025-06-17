@@ -77,6 +77,41 @@
         ]
       }
     },
+    "/auth/refresh": {
+      "get": {
+        "operationId": "AuthController_refresh",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/signout": {
+      "get": {
+        "operationId": "AuthController_signout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
     "/tasks": {
       "post": {
         "operationId": "TaskController_create",
@@ -349,6 +384,17 @@
         ]
       },
       "SignInResponseDto": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "access_token"
+        ]
+      },
+      "RefreshResponseDto": {
         "type": "object",
         "properties": {
           "access_token": {

@@ -10,9 +10,3 @@ export class SignInRequestDto {
     @IsString()
     password!: string
 }
-
-export class SignInResponseDto {
-    @ApiProperty({ type: String })
-    @IsString()
-    access_token!: string
-}

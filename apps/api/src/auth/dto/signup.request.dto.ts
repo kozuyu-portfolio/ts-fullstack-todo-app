@@ -11,9 +11,3 @@ export class SignUpRequestDto {
     @MinLength(6)
     password!: string
 }
-
-export class SignUpResponseDto {
-    @ApiProperty({ type: String })
-    @IsString()
-    access_token!: string
-}
