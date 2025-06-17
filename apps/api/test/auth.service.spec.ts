@@ -2,10 +2,12 @@ import { JwtService } from '@nestjs/jwt'
 import * as argon2 from 'argon2'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { AuthService } from '../src/auth/auth.service'
+import { RedisService } from '../src/redis/redis.service'
 import { prisma } from './helper/prisma-test-util'
 
 const jwt = new JwtService({ secret: 'test-secret' })
-const service = new AuthService(prisma, jwt)
+const redis = new RedisService()
+const service = new AuthService(prisma, jwt, redis)
 
 describe('AuthService', () => {
     beforeAll(async () => {
