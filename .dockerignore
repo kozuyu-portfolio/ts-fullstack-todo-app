@@ -1,0 +1,43 @@
+# ファイル: /.dockerignore
+node_modules
+.git
+.gitignore
+README.md
+.env
+.nyc_output
+coverage
+.vscode
+.devcontainer
+dist
+.next
+.nuxt
+.vercel
+.netlify
+
+# CDK 関連
+infra/cdk.out
+infra/node_modules
+
+# テスト関連
+**/*.test.*
+**/*.spec.*
+**/test/
+**/tests/
+coverage/
+
+# ログファイル
+*.log
+logs/
+
+# OS関連
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+*.swp
+*.swo
+
+# キャッシュディレクトリ
+.cache/
+.tmp/

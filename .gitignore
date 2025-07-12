@@ -16,3 +16,6 @@ coverage
 
 # ログ
 *.log
+
+# その他
+session-manager-plugin.deb
