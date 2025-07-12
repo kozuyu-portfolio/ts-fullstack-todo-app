@@ -22,6 +22,10 @@ async function httpBootstrap() {
 
     await app.listen(process.env.PORT ?? 3000)
 
+    if (process.env.AWS_LAMBDA_FUNCTION_NAME) {
+        console.log('Running in Lambda, skipping Swagger generation.')
+        return
+    }
     const doc = SwaggerModule.createDocument(app, new DocumentBuilder().build())
     writeFileSync('swagger.json', JSON.stringify(doc, null, 2))
 }

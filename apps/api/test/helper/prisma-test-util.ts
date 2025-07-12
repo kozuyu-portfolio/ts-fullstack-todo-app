@@ -21,4 +21,4 @@ export const dropTestDb = () => {
     execSync(`psql -h ${DB_HOST} -U postgres -d postgres -c "DROP DATABASE IF EXISTS ${DB_NAME} WITH (FORCE);"`)
 }
 
-export const prisma = new PrismaService()
+export const prisma = new PrismaService(process.env.DATABASE_URL)

@@ -1,8 +1,21 @@
 import { createClient } from '@hey-api/client-axios'
 import { authControllerRefresh } from '@ts-fullstack-todo/api-client'
+import { RuntimeEnvConstants, isValidStage } from '@ts-fullstack-todo/shared'
+
+function getApiBaseURL(): string {
+    if (import.meta.env.DEV) {
+        return 'http://localhost:3000'
+    }
+
+    const stage = import.meta.env.VITE_STAGE
+    if (!isValidStage(stage)) {
+        throw new Error(`Invalid stage: ${stage}. Valid stages are: ${Object.keys(RuntimeEnvConstants).join(', ')}`)
+    }
+    return RuntimeEnvConstants[stage].apiBaseURL
+}
 
 export const apiClient = createClient({
-    baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000',
+    baseURL: getApiBaseURL(),
     withCredentials: true,
     auth: () => localStorage.getItem('token') ?? '',
 })
@@ -21,7 +34,7 @@ let refreshPromise: Promise<string | null> | null = null
 async function refreshToken() {
     if (!refreshPromise) {
         isRefreshing = true
-        refreshPromise = authControllerRefresh({ client: apiClient })
+        refreshPromise = authControllerRefresh({ client: apiClient, validateStatus: (_status) => true })
             .then((res) => {
                 const newToken = res.data?.access_token
                 if (newToken) {

@@ -2,18 +2,38 @@
     "name": "@ts-fullstack-todo/shared",
     "version": "0.1.0",
     "description": "",
-    "main": "dist/index.js",
+    "main": "./dist/cjs/runtime/index.js",
+    "module": "./dist/esm/runtime/index.js",
+    "types": "./dist/types/runtime/index.d.ts",
     "scripts": {
         "test": "echo \"unit test is not implemented\"",
-        "build": "tsc -p tsconfig.json",
+        "build": "pnpm clean && pnpm build:esm && pnpm build:cjs && pnpm build:types",
+        "build:esm": "tsc -p tsconfig.esm.json",
+        "build:cjs": "tsc -p tsconfig.cjs.json && pnpm build:cjs:package-json",
+        "build:cjs:package-json": "echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
+        "build:types": "tsc -p tsconfig.types.json",
         "clean": "rimraf dist"
     },
     "packageManager": "pnpm@10.10.0",
     "private": "false",
     "type": "module",
-    "types": "dist/index.d.ts",
     "files": ["dist"],
     "dependencies": {
         "uuid": "^11.1.0"
+    },
+    "peerDependencies": {
+        "aws-cdk-lib": "2.196.0"
+    },
+    "exports": {
+        ".": {
+            "import": "./dist/esm/runtime/index.js",
+            "require": "./dist/cjs/runtime/index.js",
+            "types": "./dist/types/runtime/index.d.ts"
+        },
+        "./infra": {
+            "import": "./dist/esm/infra/index.js",
+            "require": "./dist/cjs/infra/index.js",
+            "types": "./dist/types/infra/index.d.ts"
+        }
     }
 }

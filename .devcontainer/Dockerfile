@@ -14,5 +14,7 @@ RUN apt-get update && \
       xauth \
       xvfb \ 
       postgresql-client && \
+    curl "https://s3.amazonaws.com/session-manager-downloads/plugin/latest/ubuntu_arm64/session-manager-plugin.deb" -o "session-manager-plugin.deb" && \
+    dpkg -i session-manager-plugin.deb && \
     rm -rf /var/lib/apt/lists/*
 

@@ -1,4 +1,5 @@
 import { JwtService } from '@nestjs/jwt'
+import { requireEnv } from '@ts-fullstack-todo/shared'
 import * as argon2 from 'argon2'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { AuthService } from '../src/auth/auth.service'
@@ -6,8 +7,16 @@ import { RedisService } from '../src/redis/redis.service'
 import { prisma } from './helper/prisma-test-util'
 
 const jwt = new JwtService({ secret: 'test-secret' })
-const redis = new RedisService()
-const service = new AuthService(prisma, jwt, redis)
+const redis = new RedisService(requireEnv('REDIS_URL'))
+const service = new AuthService(
+    requireEnv('JWT_ACCESS_SECRET'),
+    requireEnv('JWT_ACCESS_EXPIRES_IN'),
+    requireEnv('JWT_REFRESH_SECRET'),
+    requireEnv('JWT_REFRESH_EXPIRES_IN'),
+    prisma,
+    jwt,
+    redis,
+)
 
 describe('AuthService', () => {
     beforeAll(async () => {

@@ -1,6 +1,7 @@
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2'
 import { Injectable, Logger } from '@nestjs/common'
 import { TaskStatus } from '@prisma/client'
+import { requireEnv } from '@ts-fullstack-todo/shared'
 import nodemailer from 'nodemailer'
 import { PrismaService } from '../prisma/prisma.service'
 import { SendReminderDto } from './dto/send-reminder.dto'
@@ -14,8 +15,9 @@ export class ReminderService {
 
     /** 期限が近いタスクを取得してメール送信 */
     async sendDeadlines(): Promise<void> {
-        // TODO: 閾値は環境変数から取得するようにする
-        const threshold = 24 * 60 * 60 * 1000
+        const fromEmail = requireEnv('REMINDER_MAIL_FROM')
+        const thresholdAsString = requireEnv('REMINDER_DEADLINE_THRESHOLD_MS')
+        const threshold = Number.parseInt(thresholdAsString, 10)
 
         /* ユーザーごとにグループ化 */
         const users = await this.prisma.user.findMany({
@@ -46,12 +48,13 @@ export class ReminderService {
                     deadline: t.deadline as Date,
                 })),
             }
-            await this.sendEmail(dto)
+            await this.sendEmail({ ...dto, fromEmail })
         }
     }
 
-    private async sendEmail(dto: SendReminderDto) {
-        const html = `<h3>期限が近いタスク一覧</h3><ul>${dto.tasks
+    private async sendEmail(param: SendReminderDto & { fromEmail: string }) {
+        const { tasks, userEmail, fromEmail } = param
+        const html = `<h3>期限が近いタスク一覧</h3><ul>${tasks
             .map((t) => `<li>${t.title} — ${t.deadline.toLocaleString('ja-JP')}</li>`)
             .join('')}</ul>`
 
@@ -63,12 +66,11 @@ export class ReminderService {
         })
 
         await transporter.sendMail({
-            from: process.env.MAIL_FROM,
-            to: dto.userEmail,
+            from: fromEmail,
+            to: userEmail,
             subject: '【Todo】リマインダー',
             html,
         })
-
-        this.logger.log(`Reminder sent to ${dto.userEmail}`)
+        this.logger.log(`Reminder sent to ${userEmail}`)
     }
 }

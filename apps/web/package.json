@@ -5,7 +5,12 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "tsc -b && vite build",
+        "env:dev": "cross-env VITE_STAGE=dev",
+        "env:stg": "cross-env VITE_STAGE=stg",
+        "env:prod": "cross-env VITE_STAGE=prod",
+        "build:dev": "pnpm env:dev tsc --project ./tsconfig.build.json && pnpm env:dev vite build",
+        "build:stg": "pnpm env:stg tsc --project ./tsconfig.build.json && pnpm env:stg vite build",
+        "build:prod": "pnpm env:prod tsc --project ./tsconfig.build.json && pnpm env:prod vite build",
         "preview": "vite preview",
         "test": "echo \"unit test is not implemented\"",
         "dev:api": "pnpm --filter @ts-fullstack-todo/api start:dev",
