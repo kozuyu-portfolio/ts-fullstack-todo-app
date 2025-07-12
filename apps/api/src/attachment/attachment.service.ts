@@ -1,7 +1,7 @@
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 import { ForbiddenException, Injectable } from '@nestjs/common'
-import { generateUUIDv7 } from '@ts-fullstack-todo/shared'
+import { generateUUIDv7, requireEnv } from '@ts-fullstack-todo/shared/dist/runtime'
 import { lookup as mime } from 'mime-types'
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateAttachmentRequestDto } from './dto/create-attachment.request.dto'
@@ -15,10 +15,7 @@ export class AttachmentService {
         private readonly prisma: PrismaService,
         private readonly s3: S3Client,
     ) {
-        if (!process.env.ATTACHMENT_BUCKET) {
-            throw new Error()
-        }
-        this.bucket = process.env.ATTACHMENT_BUCKET
+        this.bucket = requireEnv('ATTACHMENT_BUCKET')
     }
 
     async create(userId: string, taskId: string, dto: CreateAttachmentRequestDto) {

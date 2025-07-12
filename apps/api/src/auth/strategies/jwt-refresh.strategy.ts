@@ -1,18 +1,21 @@
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
-import { requireEnv } from '@ts-fullstack-todo/shared'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { generateRefreshTokenKey, strategyNames } from '../../auth/constants.js'
 import { RefreshTokenPayload } from '../../model/auth.model.js'
 import { RedisService } from '../../redis/redis.service.js'
+import { JWT_REFRESH_SECRET } from '../../secrets/secrets.constants.js'
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, strategyNames.refresh) {
-    constructor(private readonly redis: RedisService) {
+    constructor(
+        @Inject(JWT_REFRESH_SECRET) jwtRefreshSecret: string,
+        private readonly redis: RedisService,
+    ) {
         super({
             jwtFromRequest: ExtractJwt.fromExtractors([(req) => req.cookies.refresh_token]),
             ignoreExpiration: false,
-            secretOrKey: requireEnv('JWT_REFRESH_SECRET'),
+            secretOrKey: jwtRefreshSecret,
         })
     }
 

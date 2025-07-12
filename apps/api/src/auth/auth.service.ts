@@ -1,11 +1,17 @@
-import { ForbiddenException, Injectable } from '@nestjs/common'
+import { ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { generateUUIDv7, requireEnv } from '@ts-fullstack-todo/shared'
+import { generateUUIDv7 } from '@ts-fullstack-todo/shared/dist/runtime'
 import * as argon2 from 'argon2'
 import ms, { StringValue } from 'ms'
 import { AccessTokenPayload, RefreshTokenPayload } from '../model/auth.model'
 import { PrismaService } from '../prisma/prisma.service'
 import { RedisService } from '../redis/redis.service'
+import {
+    JWT_ACCESS_EXPIRES_IN,
+    JWT_ACCESS_SECRET,
+    JWT_REFRESH_EXPIRES_IN,
+    JWT_REFRESH_SECRET,
+} from '../secrets/secrets.constants'
 import { generateRefreshTokenKey } from './constants'
 import { RefreshResponseDto } from './dto/refresh.response.dto'
 import { SignInResponseDto } from './dto/signin.response.dto'
@@ -24,14 +30,18 @@ export class AuthService {
     private readonly jwtRefreshExpiresIn: string
 
     constructor(
+        @Inject(JWT_ACCESS_SECRET) jwtAccessSecret: string,
+        @Inject(JWT_ACCESS_EXPIRES_IN) jwtAccessExpiresIn: string,
+        @Inject(JWT_REFRESH_SECRET) jwtRefreshSecret: string,
+        @Inject(JWT_REFRESH_EXPIRES_IN) jwtRefreshExpiresIn: string,
         private readonly prisma: PrismaService,
         private readonly jwt: JwtService,
         private readonly redis: RedisService,
     ) {
-        this.jwtAccessSecret = requireEnv('JWT_ACCESS_SECRET')
-        this.jwtAccessExpiresIn = requireEnv('JWT_ACCESS_EXPIRES_IN')
-        this.jwtRefreshSecret = requireEnv('JWT_REFRESH_SECRET')
-        this.jwtRefreshExpiresIn = requireEnv('JWT_REFRESH_EXPIRES_IN')
+        this.jwtAccessSecret = jwtAccessSecret
+        this.jwtAccessExpiresIn = jwtAccessExpiresIn
+        this.jwtRefreshSecret = jwtRefreshSecret
+        this.jwtRefreshExpiresIn = jwtRefreshExpiresIn
 
         if (!isMsStringValue(this.jwtAccessExpiresIn)) {
             throw new Error(`Invalid JWT_ACCESS_EXPIRES_IN: ${this.jwtAccessExpiresIn}`)
@@ -54,6 +64,7 @@ export class AuthService {
                 refresh_token: refreshToken,
             }
         } catch (err) {
+            console.error('Error during user signup:', err)
             throw new ForbiddenException('Credentials taken')
         }
     }
@@ -85,7 +96,7 @@ export class AuthService {
 
         const exists = await this.redis.get(generateRefreshTokenKey(payload.sub, payload.jti))
         if (!exists) {
-            throw new ForbiddenException('Session expired')
+            throw new UnauthorizedException('Session expired')
         }
 
         const user = await this.prisma.user.findUnique({

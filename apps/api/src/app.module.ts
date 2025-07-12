@@ -5,13 +5,13 @@ import { AppService } from './app.service'
 import { AttachmentModule } from './attachment/attachment.module'
 import { AuthModule } from './auth/auth.module'
 import { GlobalAccessTokenGuard } from './auth/guards/global-access-token.guard'
+import { EventModule } from './events/event.module'
 import { PrismaModule } from './prisma/prisma.module'
 import { RedisModule } from './redis/redis.module'
-import { ReminderModule } from './reminder/reminder.module'
 import { TaskModule } from './task/task.module'
 
 @Module({
-    imports: [PrismaModule, AuthModule, TaskModule, AttachmentModule, ReminderModule, RedisModule],
+    imports: [PrismaModule, AuthModule, TaskModule, AttachmentModule, RedisModule, EventModule],
     controllers: [AppController],
     providers: [
         AppService,

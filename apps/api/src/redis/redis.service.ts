@@ -1,12 +1,13 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common'
+import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
 import { Redis } from 'ioredis'
+import { REDIS_URL } from 'secrets/secrets.constants'
 
 @Injectable()
 export class RedisService implements OnModuleDestroy {
     private readonly client: Redis
 
-    constructor() {
-        this.client = new Redis(process.env.REDIS_URL || 'redis://redis:6379/0')
+    constructor(@Inject(REDIS_URL) redisUrl: string) {
+        this.client = new Redis(redisUrl)
     }
 
     async set(key: string, value: string, ttlSeconds?: number) {
