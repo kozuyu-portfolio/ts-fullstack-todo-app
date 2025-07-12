@@ -15,5 +15,19 @@
     "files": ["dist"],
     "dependencies": {
         "uuid": "^11.1.0"
+    },
+    "peerDependencies": {
+        "aws-cdk-lib": "2.196.0"
+    },
+    "exports": {
+        ".": {
+            "browser": "./dist/runtime/index.js",
+            "import": "./dist/runtime/index.js",
+            "require": "./dist/runtime/index.js"
+        },
+        "./infra": {
+            "import": "./dist/infra/index.js",
+            "require": "./dist/infra/index.js"
+        }
     }
 }
