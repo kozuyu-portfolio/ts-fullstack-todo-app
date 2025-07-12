@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common'
-import { eventBridgeDetailTypes } from '@ts-fullstack-todo/shared/dist/runtime'
+import { eventBridgeDetailTypes } from '@ts-fullstack-todo/shared'
 import { ReminderService } from './reminder.service'
 
 @Controller('events')

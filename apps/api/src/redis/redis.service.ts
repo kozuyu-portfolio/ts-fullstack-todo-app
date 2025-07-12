@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
 import { Redis } from 'ioredis'
-import { REDIS_URL } from 'secrets/secrets.constants'
+import { REDIS_URL } from '../secrets/secrets.constants'
 
 @Injectable()
 export class RedisService implements OnModuleDestroy {

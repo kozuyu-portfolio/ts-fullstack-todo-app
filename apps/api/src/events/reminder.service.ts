@@ -1,7 +1,7 @@
 import { SESv2Client, SendEmailCommand } from '@aws-sdk/client-sesv2'
 import { Injectable, Logger } from '@nestjs/common'
 import { TaskStatus } from '@prisma/client'
-import { requireEnv } from '@ts-fullstack-todo/shared/dist/runtime'
+import { requireEnv } from '@ts-fullstack-todo/shared'
 import nodemailer from 'nodemailer'
 import { PrismaService } from '../prisma/prisma.service'
 import { SendReminderDto } from './dto/send-reminder.dto'

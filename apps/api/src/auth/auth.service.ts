@@ -1,6 +1,6 @@
 import { ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
-import { generateUUIDv7 } from '@ts-fullstack-todo/shared/dist/runtime'
+import { generateUUIDv7 } from '@ts-fullstack-todo/shared'
 import * as argon2 from 'argon2'
 import ms, { StringValue } from 'ms'
 import { AccessTokenPayload, RefreshTokenPayload } from '../model/auth.model'
