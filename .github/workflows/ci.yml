@@ -91,4 +91,4 @@ jobs:
           pnpm web test:e2e
 
       - name: Build
-        run: pnpm api build && pnpm web build
+        run: pnpm api build && pnpm web build:dev
