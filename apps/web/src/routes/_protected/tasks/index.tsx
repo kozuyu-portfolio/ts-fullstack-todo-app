@@ -1,12 +1,23 @@
-import CheckIcon from '@mui/icons-material/Check'
+import CheckBoxIcon from '@mui/icons-material/CheckBox'
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import TimelapseIcon from '@mui/icons-material/Timelapse'
-import { Box, Button, Container, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material'
+import {
+    Box,
+    Button,
+    Container,
+    IconButton,
+    Stack,
+    TextField,
+    ToggleButton,
+    ToggleButtonGroup,
+    Typography,
+} from '@mui/material'
 import { TaskResponseDto } from '@ts-fullstack-todo/api-client'
 import { useAtom, useAtomValue } from 'jotai'
 import { useState } from 'react'
 import { createTaskMutationAtom, filterAtom, updateTaskMutationAtomFamily, visibleTasksAtom } from '../../../store/task'
 
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Link } from 'src/components/Link'
 import { TASK_STATUS, TaskStatus } from 'src/task-status'
 
@@ -54,15 +65,31 @@ export function TaskListPage() {
                 onChange={(_, v) => v && setFilter(v)}
                 color="primary"
                 sx={{ mb: 2 }}
+                fullWidth
             >
                 <ToggleButton value="all">All</ToggleButton>
-                <ToggleButton value={String(TASK_STATUS.NOT_STARTED)}>未着手</ToggleButton>
-                <ToggleButton value={String(TASK_STATUS.IN_PROGRESS)}>進行中</ToggleButton>
-                <ToggleButton value={String(TASK_STATUS.COMPLETED)}>完了</ToggleButton>
+                <ToggleButton value={String(TASK_STATUS.NOT_STARTED)}>
+                    <Stack direction="row" alignItems="center" gap={0.5}>
+                        <CheckBoxOutlineBlankIcon color="info" />
+                        未着手
+                    </Stack>
+                </ToggleButton>
+                <ToggleButton value={String(TASK_STATUS.IN_PROGRESS)}>
+                    <Stack direction="row" alignItems="center" gap={0.5}>
+                        <TimelapseIcon color="warning" />
+                        進行中
+                    </Stack>
+                </ToggleButton>
+                <ToggleButton value={String(TASK_STATUS.COMPLETED)}>
+                    <Stack direction="row" alignItems="center" gap={0.5}>
+                        <CheckBoxIcon color="success" />
+                        完了
+                    </Stack>
+                </ToggleButton>
             </ToggleButtonGroup>
 
             {/* 一覧 */}
-            <Stack gap={1}>
+            <Stack>
                 {tasks.map((t) => (
                     <Task key={t.id} {...t} />
                 ))}
@@ -74,39 +101,45 @@ export function TaskListPage() {
 
 function Task(props: TaskResponseDto) {
     const { id, title, status } = props
+    const navigate = useNavigate()
     const updateTask = useAtomValue(updateTaskMutationAtomFamily(id))
+    const handleUpdateStatus = () => {
+        const nextStatusMap: Record<string, TaskStatus> = {
+            [TASK_STATUS.NOT_STARTED as string]: TASK_STATUS.IN_PROGRESS,
+            [TASK_STATUS.IN_PROGRESS as string]: TASK_STATUS.COMPLETED,
+            [TASK_STATUS.COMPLETED as string]: TASK_STATUS.NOT_STARTED,
+        }
+        updateTask.mutate({ body: { status: nextStatusMap[status] } })
+    }
+
     return (
-        <Box
+        <Stack
             key={id}
+            direction="row"
+            spacing={2}
             sx={{
-                p: 2,
+                paddingX: 2,
+                marginTop: '-1px',
                 border: '1px solid',
                 borderColor: 'divider',
-                borderRadius: 1,
-                display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                cursor: 'pointer',
-            }}
-            onClick={() => {
-                const nextStatusMap: Record<string, TaskStatus> = {
-                    [TASK_STATUS.NOT_STARTED as string]: TASK_STATUS.IN_PROGRESS,
-                    [TASK_STATUS.IN_PROGRESS as string]: TASK_STATUS.COMPLETED,
-                    [TASK_STATUS.COMPLETED as string]: TASK_STATUS.NOT_STARTED,
-                }
-                updateTask.mutate({ body: { status: nextStatusMap[status] } })
+                height: 64,
             }}
         >
-            <Link
-                to={'/tasks/$taskId'}
-                params={{
-                    taskId: id.toString(),
-                }}
+            <Button onClick={handleUpdateStatus} sx={{ width: 48, cursor: 'pointer' }}>
+                {status === TASK_STATUS.NOT_STARTED && <CheckBoxOutlineBlankIcon color="info" />}
+                {status === TASK_STATUS.IN_PROGRESS && <TimelapseIcon color="warning" />}
+                {status === TASK_STATUS.COMPLETED && <CheckBoxIcon color="success" />}
+            </Button>
+            <Box
+                width="100%"
+                height="100%"
+                onClick={() => navigate({ to: '/tasks/$taskId', params: { taskId: id.toString() } })}
+                sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
             >
-                {title}
-            </Link>
-            {status === TASK_STATUS.COMPLETED && <CheckIcon color="success" />}
-            {status === TASK_STATUS.IN_PROGRESS && <TimelapseIcon color="warning" />}
-        </Box>
+                <Typography variant="body1">{title}</Typography>
+            </Box>
+        </Stack>
     )
 }

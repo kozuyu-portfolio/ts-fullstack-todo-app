@@ -46,7 +46,7 @@ export function TaskDetailPage() {
     const updateTask = useAtomValue(updateTaskMutationAtomFamily(taskId))
     const uploadFile = useAtomValue(uploadFileMutationAtomFamily(taskId))
 
-    const { control, handleSubmit, reset, watch } = useForm<FormValues>({
+    const { control, reset, watch } = useForm<FormValues>({
         defaultValues: {
             title: task?.title ?? '',
             status: task?.status,
@@ -98,22 +98,42 @@ export function TaskDetailPage() {
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
-            {/* タイトル & ステータス */}
-            <Stack direction="row" alignItems="center" spacing={2} mb={2}>
-                <Typography variant="h4">{task.title}</Typography>
-                <Chip label={taskStatusLabelMap[task.status]} color={taskStatusColorMap[task.status]} />
+            <Stack direction="row" alignItems="center" justifyContent="space-between" mb={4}>
+                {/* タイトル & ステータス */}
+                <Stack direction="row" alignItems="center" spacing={2} mb={2}>
+                    <Typography variant="h4">{task.title}</Typography>
+                    <Chip label={taskStatusLabelMap[task.status]} color={taskStatusColorMap[task.status]} />
+                </Stack>
+
+                {/* メタ情報 */}
+                <Stack direction="row" spacing={4}>
+                    <Typography variant="body2" color="text.secondary">
+                        <strong>作成日時：</strong> {dayjs(task.createdAt).format('YYYY/MM/DD HH:mm')}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        <strong>更新日時</strong> {dayjs(task.updatedAt).format('YYYY/MM/DD HH:mm')}
+                    </Typography>
+                </Stack>
             </Stack>
 
-            {/* メタ情報 */}
-            <Stack direction="row" spacing={4} mb={3}>
-                <Typography variant="body2" color="text.secondary">
-                    <strong>作成日時：</strong> {dayjs(task.createdAt).format('YYYY/MM/DD HH:mm')}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    <strong>更新日時</strong> {dayjs(task.updatedAt).format('YYYY/MM/DD HH:mm')}
-                </Typography>
+            {/* タイトル編集 */}
+            <Stack direction="row" spacing={1} mb={4}>
+                <Controller
+                    name="title"
+                    control={control}
+                    render={({ field }) => (
+                        <TextField
+                            {...field}
+                            label="タイトル"
+                            size="small"
+                            placeholder="タイトルを編集"
+                            value={field.value}
+                            onChange={field.onChange}
+                            fullWidth
+                        />
+                    )}
+                />
             </Stack>
-
             {/* タスクステータス */}
             <Stack direction="row" spacing={2} mb={3}>
                 <Controller
@@ -129,6 +149,7 @@ export function TaskDetailPage() {
                                 label="ステータス"
                                 value={String(field.value || TASK_STATUS.NOT_STARTED)}
                                 onChange={(e) => field.onChange(e.target.value)}
+                                sx={{ minWidth: 240 }}
                             >
                                 <MenuItem value={String(TASK_STATUS.NOT_STARTED)}>未着手</MenuItem>
                                 <MenuItem value={String(TASK_STATUS.IN_PROGRESS)}>進行中</MenuItem>
@@ -152,24 +173,7 @@ export function TaskDetailPage() {
                             label="期限"
                             value={field.value}
                             onChange={field.onChange}
-                        />
-                    )}
-                />
-            </Stack>
-
-            {/* タイトル編集 */}
-            <Stack direction="row" spacing={1} mb={4}>
-                <Controller
-                    name="title"
-                    control={control}
-                    render={({ field }) => (
-                        <TextField
-                            {...field}
-                            size="small"
-                            placeholder="タイトルを編集"
-                            value={field.value}
-                            onChange={field.onChange}
-                            fullWidth
+                            sx={{ minWidth: 240 }}
                         />
                     )}
                 />
@@ -199,7 +203,7 @@ export function TaskDetailPage() {
                     borderColor: isDragActive ? 'primary.main' : 'divider',
                     textAlign: 'center',
                     borderRadius: 2,
-                    mb: 3,
+                    marginY: 3,
                     cursor: 'pointer',
                 }}
             >
