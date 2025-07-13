@@ -1,4 +1,4 @@
-import DarkIcon from '@mui/icons-material/DarkMode'
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined'
 import LightIcon from '@mui/icons-material/LightMode'
 import { AppBar, type AppBarProps, IconButton, Toolbar, styled } from '@mui/material'
 import { useAtom, useSetAtom } from 'jotai'
@@ -20,7 +20,7 @@ export function Header(props: Props) {
             <StyledToolbar sx={{ justifyContent: 'space-between' }}>
                 {children}
                 <IconButton aria-label="Toggle dark mode" onClick={toggle} edge="end" size="large">
-                    {mode === 'light' ? <DarkIcon style={{ color: 'yellow' }} /> : <LightIcon />}
+                    {mode === 'light' ? <DarkModeOutlinedIcon style={{ color: 'white' }} /> : <LightIcon />}
                 </IconButton>
             </StyledToolbar>
         </AppBar>

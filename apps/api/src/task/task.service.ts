@@ -22,6 +22,7 @@ export class TaskService {
         return this.prisma.task.findMany({
             where: { userId, ...(status && { status }) },
             include: { attachments: true },
+            orderBy: { createdAt: 'desc' },
         })
     }
 

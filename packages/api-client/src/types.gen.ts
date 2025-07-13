@@ -243,6 +243,17 @@ export type AttachmentControllerGetDownloadUrlResponses = {
 
 export type AttachmentControllerGetDownloadUrlResponse = AttachmentControllerGetDownloadUrlResponses[keyof AttachmentControllerGetDownloadUrlResponses];
 
+export type EventControllerNonHttpEventTriggerData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/events';
+};
+
+export type EventControllerNonHttpEventTriggerResponses = {
+    201: unknown;
+};
+
 export type ClientOptions = {
     baseURL: string;
 };
