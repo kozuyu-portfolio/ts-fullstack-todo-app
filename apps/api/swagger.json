@@ -330,6 +330,20 @@
           "attachments"
         ]
       }
+    },
+    "/events": {
+      "post": {
+        "operationId": "EventController_nonHttpEventTrigger",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Event"
+        ]
+      }
     }
   },
   "info": {
