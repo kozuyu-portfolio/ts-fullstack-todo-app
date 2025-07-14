@@ -1,16 +1,22 @@
-import { S3Client } from '@aws-sdk/client-s3'
+import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { TaskStatus } from '@prisma/client'
+import { requireEnv } from '@ts-fullstack-todo/shared'
+import pLimit from 'p-limit'
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateTaskRequestDto } from './dto/create-task.request.dto'
 import { UpdateTaskRequestDto } from './dto/update-task.request.dto'
 
 @Injectable()
 export class TaskService {
+    private readonly attachmentBucket: string
+
     constructor(
         private readonly prisma: PrismaService,
         private readonly s3: S3Client,
-    ) {}
+    ) {
+        this.attachmentBucket = requireEnv('ATTACHMENT_BUCKET')
+    }
 
     create(userId: string, dto: CreateTaskRequestDto) {
         return this.prisma.task.create({
@@ -39,18 +45,35 @@ export class TaskService {
     }
 
     async remove(userId: string, id: string) {
-        const task = await this.prisma.task.findUnique({ where: { id } })
-        if (!task || task.userId !== userId) {
-            throw new ForbiddenException()
-        }
+        const attachments = await this.prisma.$transaction(async (tx) => {
+            const task = await tx.task.findUnique({ where: { id } })
+            if (!task || task.userId !== userId) {
+                throw new ForbiddenException()
+            }
 
-        const attachments = await this.prisma.attachment.findMany({ where: { taskId: id } })
-        this.prisma.$transaction(async (prisma) => {
-            await prisma.attachment.deleteMany({ where: { taskId: id } })
-            await prisma.task.delete({ where: { id } })
+            const attachments = await tx.attachment.findMany({ where: { taskId: id } })
+            await tx.attachment.deleteMany({ where: { taskId: id } })
+            await tx.task.delete({ where: { id } })
+
+            return attachments
         })
-        // TODO: S3オブジェクトも削除する
-        // p-throttle を使って並列実行するか
+
+        try {
+            const limit = pLimit(4)
+            const deletePromises = attachments.map((attachment) =>
+                limit(async () => {
+                    await this.s3.send(
+                        new DeleteObjectCommand({
+                            Bucket: this.attachmentBucket,
+                            Key: attachment.objectKey,
+                        }),
+                    )
+                }),
+            )
+            await Promise.all(deletePromises)
+        } catch (error) {
+            console.error('Error deleting attachments:', error)
+        }
 
         return { deleted: true }
     }
