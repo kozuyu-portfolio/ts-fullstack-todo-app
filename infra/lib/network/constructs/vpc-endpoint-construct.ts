@@ -19,6 +19,10 @@ export class VpcEndpointConstruct extends Construct {
             service: InterfaceVpcEndpointAwsService.SECRETS_MANAGER,
             securityGroups: [vpcEndpointSecurityGroup],
         })
+        vpc.addInterfaceEndpoint(makeId('SesVpcEndpoint', stage), {
+            service: InterfaceVpcEndpointAwsService.EMAIL_SMTP,
+            securityGroups: [vpcEndpointSecurityGroup],
+        })
 
         vpc.addInterfaceEndpoint(makeId('SsmVpcEndpoint', stage), {
             service: InterfaceVpcEndpointAwsService.SSM,
