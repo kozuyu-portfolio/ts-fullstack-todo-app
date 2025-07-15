@@ -7,7 +7,7 @@
 **pnpm モノレポ**・**NestJS**・**React + Vite**・**Prisma**・**AWS CDK / Lambda Web Adapter** などを採用し、
 **実用レベルの設計・実装・運用フロー** を小規模構成で再現しています。  
 
-<video src="https://github.com/kozuyu-jp/ts-fullstack-todo-app/raw/main/assets/demo.mov" controls width="600"></video>
+![デモ](assets/demo.gif) 
 
 ---
 
@@ -121,5 +121,4 @@ pnpm infra cdk:{{stage}} deploy     # デプロイ
 
 ## 🗺️ アーキテクチャ図
 
-<img src="./assets/system-configuration-diagram.svg" alt="System Configuration Diagram"  />
-
+![アーキテクチャ図](assets/system-configuration-diagram.svg)
