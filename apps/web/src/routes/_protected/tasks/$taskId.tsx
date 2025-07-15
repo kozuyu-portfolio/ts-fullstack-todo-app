@@ -225,7 +225,14 @@ function Attachment(props: AttachmentInDto) {
             startIcon={<DownloadIcon />}
             onClick={async () => {
                 const res = await downloadFile.mutateAsync()
-                window.open(res.url, '_blank', 'noopener')
+
+                const link = document.createElement('a')
+                link.setAttribute('href', res.url)
+                link.setAttribute('download', res.filename || filename)
+                link.style.visibility = 'hidden'
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
             }}
         >
             {filename}
