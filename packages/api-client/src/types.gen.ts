@@ -79,6 +79,7 @@ export type CreateAttachmentResponseDto = {
 
 export type GetAttachmentResponseDto = {
     url: string;
+    filename: string;
 };
 
 export type AppControllerGetHelloData = {

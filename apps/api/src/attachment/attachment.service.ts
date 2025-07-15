@@ -59,9 +59,13 @@ export class AttachmentService {
             throw new ForbiddenException()
         }
 
-        const command = new GetObjectCommand({ Bucket: this.bucket, Key: attachment.objectKey })
+        const command = new GetObjectCommand({
+            Bucket: this.bucket,
+            Key: attachment.objectKey,
+            ResponseContentDisposition: `attachment; filename="${encodeURIComponent(attachment.filename)}"`,
+        })
         const url = await getSignedUrl(this.s3, command, { expiresIn: 300 })
 
-        return { url }
+        return { url, filename: attachment.filename }
     }
 }

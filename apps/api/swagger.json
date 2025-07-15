@@ -599,10 +599,14 @@
         "properties": {
           "url": {
             "type": "string"
+          },
+          "filename": {
+            "type": "string"
           }
         },
         "required": [
-          "url"
+          "url",
+          "filename"
         ]
       }
     }
