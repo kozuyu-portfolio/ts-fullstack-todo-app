@@ -1,6 +1,6 @@
 # TS-Fullstack-Todo-App
 
-![CI](https://github.com/kozuyu-jp/ts-fullstack-todo-app/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/kozuyu-portfolio/ts-fullstack-todo-app/actions/workflows/ci.yml/badge.svg)
 
 
 **TypeScript × Node.js 22** を中心に構築したモダンなタスク管理 SaaS のサンプル実装です。  
